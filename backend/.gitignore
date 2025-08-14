@@ -166,3 +166,5 @@ coverage/
 lib/
 es/
 umd/
+
+/generated/prisma
