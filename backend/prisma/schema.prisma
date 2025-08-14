@@ -11,11 +11,26 @@ datasource db {
 }
 
 model Voice {
-  id       String @id @default(cuid())
-  name     String
-  language String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String @id @default(cuid())
+  name          String
+  language      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  speechRequests SpeechRequest[]
 
   @@map("voices")
+}
+
+model SpeechRequest {
+  id            String   @id @default(cuid())
+  prompt        String
+  type          String   // e.g., "text-to-speech", "song", etc.
+  lyrics        String?  // Optional lyrics field
+  status        String   @default("pending") // e.g., "pending", "processing", "completed", "failed"
+  voiceId       String?  // Optional reference to Voice
+  voice         Voice?   @relation(fields: [voiceId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("speech_requests")
 }
