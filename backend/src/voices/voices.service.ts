@@ -3,12 +3,25 @@ import { PrismaService } from '../prisma/prisma.service';
 import { LoggerService } from '../logger';
 import { RedisService } from '../redis';
 
+/**
+ * Service responsible for handling voice-related operations
+ *
+ * This service provides methods for retrieving voice data from the database
+ * with optional filtering and pagination. It uses Redis caching to improve
+ * performance for frequently accessed data.
+ */
 @Injectable()
 export class VoicesService {
   private readonly logger: LoggerService;
   private readonly CACHE_TTL = 300; // 5 minutes in seconds
   private readonly CACHE_PREFIX = 'voices';
 
+  /**
+   * Creates an instance of the VoicesService
+   *
+   * @param prisma - The Prisma service for database operations
+   * @param redisService - The Redis service for caching operations
+   */
   constructor(
     private readonly prisma: PrismaService,
     private readonly redisService: RedisService,
@@ -16,6 +29,13 @@ export class VoicesService {
     this.logger = new LoggerService().setContext('VoicesService');
   }
 
+  /**
+   * Retrieves all voices with pagination
+   *
+   * @param page - The page number (starting from 1)
+   * @param limit - The number of items per page
+   * @returns A paginated list of voices and pagination metadata
+   */
   async findAll(page: number, limit: number) {
     // Create a cache key based on the query parameters
     const cacheKey = this.redisService.generateKey(this.CACHE_PREFIX, {
@@ -68,6 +88,14 @@ export class VoicesService {
     }
   }
 
+  /**
+   * Retrieves voices filtered by language with pagination
+   *
+   * @param language - The language to filter voices by
+   * @param page - The page number (starting from 1)
+   * @param limit - The number of items per page
+   * @returns A paginated list of voices filtered by language and pagination metadata
+   */
   async findByLanguage(language: string, page: number, limit: number) {
     // Create a cache key based on the query parameters
     const cacheKey = this.redisService.generateKey(this.CACHE_PREFIX, {

@@ -2,14 +2,39 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoggerService } from '../logger';
 
+/**
+ * Service responsible for handling speech request operations
+ *
+ * This service provides methods for creating and managing speech requests,
+ * including validation of voice references and database operations.
+ */
 @Injectable()
 export class SpeechRequestsService {
   private readonly logger: LoggerService;
 
+  /**
+   * Creates an instance of the SpeechRequestsService
+   *
+   * @param prisma - The Prisma service for database operations
+   */
   constructor(private readonly prisma: PrismaService) {
     this.logger = new LoggerService().setContext('SpeechRequestsService');
   }
 
+  /**
+   * Creates a new speech request
+   *
+   * This method validates any provided voice ID, creates a new speech request
+   * in the database, and returns the created entity with its voice relationship.
+   *
+   * @param data - The speech request data
+   * @param data.prompt - The text prompt for speech generation
+   * @param data.type - The type of speech request (e.g., 'text-to-speech', 'song')
+   * @param data.lyrics - Optional lyrics for song generation
+   * @param data.voiceId - Optional voice ID to use for speech generation
+   * @returns The created speech request with its voice relationship (if any)
+   * @throws Error if the provided voice ID doesn't exist
+   */
   async create(data: {
     prompt: string;
     type: string;

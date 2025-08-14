@@ -1,6 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsNotEmpty, IsIn } from 'class-validator';
 
+/**
+ * Data Transfer Object (DTO) for creating a speech request
+ *
+ * This class defines the structure and validation rules for data
+ * required to create a new speech request. It includes:
+ * - Required prompt text for speech generation
+ * - Required type of speech request (from predefined list)
+ * - Optional lyrics for song generation
+ * - Optional voice ID to use for speech generation
+ */
 export class CreateSpeechRequestDto {
   @ApiProperty({
     description: 'The prompt text for the speech generation',

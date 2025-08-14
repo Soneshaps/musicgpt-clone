@@ -3,15 +3,38 @@ import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { VoicesService } from './voices.service';
 import { LoggerService } from '../logger';
 
+/**
+ * Controller responsible for handling voice-related HTTP requests
+ *
+ * This controller provides endpoints for retrieving voice data with
+ * optional filtering by language and pagination support.
+ */
 @ApiTags('voices')
 @Controller('voices')
 export class VoicesController {
   private readonly logger: LoggerService;
 
+  /**
+   * Creates an instance of the VoicesController
+   *
+   * @param voicesService - The service for handling voice operations
+   */
   constructor(private readonly voicesService: VoicesService) {
     this.logger = new LoggerService().setContext('VoicesController');
   }
 
+  /**
+   * Retrieves voices with optional filtering and pagination
+   *
+   * This endpoint allows clients to fetch voices with the following options:
+   * - Filter by language (e.g., 'english', 'nepali', 'indian')
+   * - Paginate results with page number and limit
+   *
+   * @param language - Optional language filter
+   * @param page - Optional page number (default: 1)
+   * @param limit - Optional items per page (default: 15, max: 100)
+   * @returns Paginated list of voices and pagination metadata
+   */
   @Get()
   @ApiOperation({ summary: 'Get voices with pagination and filtering' })
   @ApiQuery({
