@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,9 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  // Apply global response transformation
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   // Enable CORS
   app.enableCors();
@@ -30,7 +34,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
-  console.log('Application is running on: http://localhost:3000');
+  console.log('🚀 Application is running on: http://localhost:3000');
+  console.log('📚 API Documentation available at: http://localhost:3000/api');
 }
 
 void bootstrap();
