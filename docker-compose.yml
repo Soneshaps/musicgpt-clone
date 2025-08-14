@@ -12,6 +12,29 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3000
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/musicgpt?schema=public
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=musicgpt
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+    restart: unless-stopped
+    networks:
+      - musicgpt-network
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: musicgpt-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=musicgpt
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - musicgpt-network
@@ -21,4 +44,5 @@ networks:
     driver: bridge
 
 volumes:
+  postgres_data:
   node_modules:
