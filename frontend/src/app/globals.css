@@ -81,6 +81,9 @@
   .bg-neutral-base {
     background-color: #272a2e;
   }
+  .bg-neutral-base\/50 {
+    background-color: rgba(39, 42, 46, 0.5);
+  }
 
   .text-neutral-hover {
     color: #3a3e42;
@@ -106,6 +109,23 @@
   }
   .bg-neutral-light {
     background-color: #e4e6e8;
+  }
+  .bg-neutral-light\/20 {
+    background-color: rgba(228, 230, 232, 0.2);
+  }
+  .hover\:bg-neutral-light\/20:hover {
+    background-color: rgba(228, 230, 232, 0.2);
+  }
+  .hover\:\!\bg-neutral-light\/20:hover {
+    background-color: rgba(228, 230, 232, 0.2) !important;
+  }
+
+  /* Border utilities */
+  .border-neutral-light {
+    border-color: #e4e6e8;
+  }
+  .hover\:border-neutral-light:hover {
+    border-color: #e4e6e8;
   }
 
   .text-pure-white {

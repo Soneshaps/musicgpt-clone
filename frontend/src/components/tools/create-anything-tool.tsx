@@ -3,12 +3,15 @@ import { FileAttachment } from "../common/file-attachment";
 import { ChangeEvent, FC } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-export type SongMode = "instrumental" | "lyrics";
+export enum SongMode {
+  INSTRUMENTAL = "instrumental",
+  LYRICS = "lyrics",
+}
 
 interface CreateAnythingToolProps {
   prompt: string;
   lyrics: string;
-  activeMode: SongMode;
+  activeMode: SongMode | null;
   selectedFile?: File | null;
   onPromptChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   onLyricsChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;

@@ -1,7 +1,8 @@
-import { CreateAnythingTool } from "./tools/create-anything-tool";
+import { CreateAnythingTool, SongMode } from "./tools/create-anything-tool";
 import { FormActions } from "./tools/form-actions";
 import { TextToSpeechTool } from "./tools/text-to-speech-tool";
 import { ToolType } from "./music-gpt-interface";
+import { useState } from "react";
 
 const PromptBox = ({
   selectedTool,
@@ -10,6 +11,7 @@ const PromptBox = ({
   selectedTool: ToolType;
   setSelectedTool: (tool: ToolType) => void;
 }) => {
+  const [activeMode, setActiveMode] = useState<SongMode | null>(null);
   return (
     <div className="relative z-10 w-full rounded-[27px] bg-[#272A2E] shadow-lg backdrop-blur-sm transition duration-200">
       <form onSubmit={() => {}} className="overflow-hidden pb-4">
@@ -28,7 +30,7 @@ const PromptBox = ({
               <CreateAnythingTool
                 prompt={"asd"}
                 lyrics={"asd"}
-                activeMode={"instrumental"}
+                activeMode={activeMode}
                 onPromptChange={() => {}}
                 onLyricsChange={() => {}}
               />
@@ -36,12 +38,11 @@ const PromptBox = ({
           )}
 
           <FormActions
-            activeMode={"instrumental"}
+            activeMode={activeMode}
             selectedTool={selectedTool}
             isButtonEnabled={true}
             isLoading={false}
-            showModeButtons={true}
-            onModeToggle={() => {}}
+            onModeToggle={setActiveMode}
             onToolChange={setSelectedTool}
             onFileChange={() => {}}
             onSubmit={() => {}}

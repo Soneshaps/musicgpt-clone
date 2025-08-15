@@ -3,20 +3,17 @@ import { ButtonVariants } from "@/components/common/button";
 import Button from "@/components/common/button/button";
 import { twclsx } from "@/utils/twclsx";
 import { SongMode } from "./create-anything-tool";
-import {
-  Tool,
-  ToolsDropdown,
-} from "@/components/common/dropdown/tools-dropdown";
+import { ToolsDropdown } from "@/components/common/dropdown/tools-dropdown";
 import { ChangeEvent, FC, useRef } from "react";
 import { ToolType } from "../music-gpt-interface";
 
 interface FormActionsProps {
-  activeMode: SongMode;
-  selectedTool: Tool;
+  activeMode: SongMode | null;
+  selectedTool: ToolType;
   isButtonEnabled: boolean;
   isLoading?: boolean;
   showModeButtons?: boolean;
-  onModeToggle: (mode: SongMode) => void;
+  onModeToggle: (mode: SongMode | null) => void;
   onToolChange: (tool: ToolType) => void;
   onSubmit: () => void;
   onFileChange?: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -27,7 +24,6 @@ export const FormActions: FC<FormActionsProps> = ({
   selectedTool,
   isButtonEnabled,
   isLoading = false,
-  showModeButtons = true,
   onModeToggle,
   onToolChange,
   onSubmit,
@@ -37,6 +33,14 @@ export const FormActions: FC<FormActionsProps> = ({
 
   const handleFileButtonClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleModeToggle = (mode: SongMode) => {
+    if (mode === activeMode) {
+      onModeToggle(null);
+    } else {
+      onModeToggle(mode);
+    }
   };
 
   return (
@@ -68,12 +72,12 @@ export const FormActions: FC<FormActionsProps> = ({
                 "transform transition-all duration-300 ease-in-out",
                 {
                   "scale-105 border-neutral-light bg-neutral-light/20 shadow-lg hover:border-neutral-light hover:!bg-neutral-light/20":
-                    activeMode === "instrumental",
+                    activeMode === SongMode.INSTRUMENTAL,
                   "hover:scale-105 active:scale-95":
-                    activeMode !== "instrumental",
+                    activeMode !== SongMode.INSTRUMENTAL,
                 }
               )}
-              onClick={() => onModeToggle("instrumental")}
+              onClick={() => handleModeToggle(SongMode.INSTRUMENTAL)}
             >
               <AudioLines
                 height={16}
@@ -81,8 +85,8 @@ export const FormActions: FC<FormActionsProps> = ({
                 className={twclsx(
                   "text-neutral-light transition-transform duration-200",
                   {
-                    "scale-110": activeMode === "instrumental",
-                    "scale-100": activeMode !== "instrumental",
+                    "scale-110": activeMode === SongMode.INSTRUMENTAL,
+                    "scale-100": activeMode !== SongMode.INSTRUMENTAL,
                   }
                 )}
               />
@@ -94,11 +98,12 @@ export const FormActions: FC<FormActionsProps> = ({
                 "transform transition-all duration-300 ease-in-out",
                 {
                   "scale-105 border-neutral-light bg-neutral-light/20 shadow-lg hover:border-neutral-light hover:!bg-neutral-light/20":
-                    activeMode === "lyrics",
-                  "hover:scale-105 active:scale-95": activeMode !== "lyrics",
+                    activeMode === SongMode.LYRICS,
+                  "hover:scale-105 active:scale-95":
+                    activeMode !== SongMode.LYRICS,
                 }
               )}
-              onClick={() => onModeToggle("lyrics")}
+              onClick={() => handleModeToggle(SongMode.LYRICS)}
             >
               <Plus
                 height={16}
@@ -106,8 +111,8 @@ export const FormActions: FC<FormActionsProps> = ({
                 className={twclsx(
                   "text-neutral-light transition-transform duration-200",
                   {
-                    "rotate-45": activeMode === "lyrics",
-                    "rotate-0": activeMode !== "lyrics",
+                    "rotate-45": activeMode === SongMode.LYRICS,
+                    "rotate-0": activeMode !== SongMode.LYRICS,
                   }
                 )}
               />
