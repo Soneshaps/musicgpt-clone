@@ -5,22 +5,150 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+  :root {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --font-sans: var(--font-inter);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #16191c;
     --foreground: #ededed;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  html {
+    font-family: Inter, var(--font-inter), system-ui, sans-serif;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+}
+
+@layer utilities {
+  .text-title-1 {
+    font-size: 2rem;
+    line-height: 1.5;
+  }
+}
+
+@layer components {
+  /* Screen sizes */
+  @screen xxs {
+    /* 376px */
+  }
+  @screen xs {
+    /* 480px */
+  }
+  @screen sm {
+    /* 640px */
+  }
+  @screen md {
+    /* 768px */
+  }
+  @screen lg {
+    /* 1024px */
+  }
+  @screen xl {
+    /* 1366px */
+  }
+  @screen 2xl {
+    /* 1440px */
+  }
+  @screen 3xl {
+    /* 1600px */
+  }
+}
+
+@layer base {
+  /* Custom colors */
+  .text-neutral-black {
+    color: #16191c;
+  }
+  .bg-neutral-black {
+    background-color: #16191c;
+  }
+
+  .text-neutral-base {
+    color: #272a2e;
+  }
+  .bg-neutral-base {
+    background-color: #272a2e;
+  }
+
+  .text-neutral-hover {
+    color: #3a3e42;
+  }
+  .bg-neutral-hover {
+    background-color: #3a3e42;
+  }
+
+  .text-neutral-sub-text {
+    color: #6b7280;
+  }
+  .bg-neutral-sub-text {
+    background-color: #6b7280;
+  }
+
+  .text-neutral-light {
+    color: #e4e6e8;
+  }
+  .bg-neutral-light {
+    background-color: #e4e6e8;
+  }
+
+  .text-pure-white {
+    color: #ffffff;
+  }
+  .bg-pure-white {
+    background-color: #ffffff;
+  }
+
+  .text-pure-black {
+    color: #000000;
+  }
+  .bg-pure-black {
+    background-color: #000000;
+  }
+
+  .text-purple-primary {
+    color: #4a0b4a;
+  }
+  .bg-purple-primary {
+    background-color: #4a0b4a;
+  }
+
+  .text-purple-light {
+    color: #661067;
+  }
+  .bg-purple-light {
+    background-color: #661067;
+  }
+
+  .text-purple-dark {
+    color: #2d072d;
+  }
+  .bg-purple-dark {
+    background-color: #2d072d;
+  }
+
+  .text-orange-light {
+    color: #ff62001a;
+  }
+  .bg-orange-light {
+    background-color: #ff62001a;
+  }
+
+  .text-orange-dark {
+    color: #ff6100;
+  }
+  .bg-orange-dark {
+    background-color: #ff6100;
+  }
 }
