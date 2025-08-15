@@ -96,6 +96,11 @@
     background-color: #6b7280;
   }
 
+  /* Add specific utility for hover:bg-neutral-sub-text/20 */
+  .hover\:bg-neutral-sub-text\/20:hover {
+    background-color: rgba(107, 114, 128, 0.2);
+  }
+
   .text-neutral-light {
     color: #e4e6e8;
   }
