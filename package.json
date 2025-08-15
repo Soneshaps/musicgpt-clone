@@ -16,6 +16,7 @@
     "backend:format:check": "cd backend && npm run format:check"
   },
   "devDependencies": {
+    "concurrently": "^9.2.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5"
   },
@@ -26,6 +27,13 @@
     ],
     "backend/**/*.{json,md,yml,yaml}": [
       "cd backend && prettier --write"
+    ],
+    "frontend/**/*.{js,jsx,ts,tsx}": [
+      "cd frontend && eslint --fix",
+      "cd frontend && prettier --write"
+    ],
+    "frontend/**/*.{json,md,yml,yaml}": [
+      "cd frontend && prettier --write"
     ]
   }
 }
