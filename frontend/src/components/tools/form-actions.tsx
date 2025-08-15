@@ -8,6 +8,7 @@ import {
   ToolsDropdown,
 } from "@/components/common/dropdown/tools-dropdown";
 import { ChangeEvent, FC, useRef } from "react";
+import { ToolType } from "../music-gpt-interface";
 
 interface FormActionsProps {
   activeMode: SongMode;
@@ -16,7 +17,7 @@ interface FormActionsProps {
   isLoading?: boolean;
   showModeButtons?: boolean;
   onModeToggle: (mode: SongMode) => void;
-  onToolChange: (tool: Tool) => void;
+  onToolChange: (tool: ToolType) => void;
   onSubmit: () => void;
   onFileChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -41,7 +42,7 @@ export const FormActions: FC<FormActionsProps> = ({
   return (
     <div className="flex h-9 items-center justify-between">
       <div className="flex gap-2">
-        {showModeButtons && selectedTool !== "Text to Speech" && (
+        {selectedTool === ToolType.CREATE_ANYTHING && (
           <>
             <Button
               variant={ButtonVariants.PRIMARY}

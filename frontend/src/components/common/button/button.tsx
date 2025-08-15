@@ -52,7 +52,7 @@ const Button: FC<ButtonProps> = ({
           "pointer-events-none !bg-neutral-500/50": loading || disabled,
           "bg-scale-1": loading,
         },
-        className,
+        className
       )}
       onClick={onClick}
       {...rest}
