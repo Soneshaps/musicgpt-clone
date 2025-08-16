@@ -2,7 +2,7 @@ import { CreateAnythingTool, SongMode } from "./tools/create-anything-tool";
 import { FormActions } from "./tools/form-actions";
 import { TextToSpeechTool, Voice } from "./tools/text-to-speech-tool";
 import { ToolType } from "./music-gpt-interface";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useCallback } from "react";
 import { twclsx } from "@/utils/twclsx";
 
 const PromptBox = ({
@@ -16,6 +16,10 @@ const PromptBox = ({
   const [prompt, setPrompt] = useState<string>("");
   const [lyrics, setLyrics] = useState<string>("");
   const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [textToSpeechSubmit, setTextToSpeechSubmit] = useState<
+    (() => Promise<void>) | null
+  >(null);
 
   const handlePromptChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);
@@ -23,6 +27,26 @@ const PromptBox = ({
 
   const handleLyricsChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setLyrics(e.target.value);
+  };
+
+  const handleSubmitReady = useCallback((submitFn: () => Promise<void>) => {
+    setTextToSpeechSubmit(() => submitFn);
+  }, []);
+
+  const handleSubmit = async () => {
+    if (selectedTool === ToolType.TEXT_TO_SPEECH && textToSpeechSubmit) {
+      setIsLoading(true);
+      try {
+        await textToSpeechSubmit();
+      } catch (error) {
+        console.error("Error submitting text to speech:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (selectedTool === ToolType.CREATE_ANYTHING) {
+      // Handle create anything submission logic here
+      console.log("Create anything submitted:", { prompt, lyrics, activeMode });
+    }
   };
 
   return (
@@ -46,6 +70,7 @@ const PromptBox = ({
                 onPromptChange={handlePromptChange}
                 selectedVoice={selectedVoice}
                 onVoiceSelect={setSelectedVoice}
+                onSubmitReady={handleSubmitReady}
               />
             )}
           </div>
@@ -73,12 +98,16 @@ const PromptBox = ({
             <FormActions
               activeMode={activeMode}
               selectedTool={selectedTool}
-              isButtonEnabled={true}
-              isLoading={false}
+              isButtonEnabled={
+                selectedTool === ToolType.TEXT_TO_SPEECH
+                  ? Boolean(prompt.trim())
+                  : true
+              }
+              isLoading={isLoading}
               onModeToggle={setActiveMode}
               onToolChange={setSelectedTool}
               onFileChange={() => {}}
-              onSubmit={() => {}}
+              onSubmit={handleSubmit}
             />
           </div>
         </div>

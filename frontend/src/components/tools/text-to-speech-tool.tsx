@@ -11,10 +11,11 @@ import {
 import { Textarea } from "../common/input/textarea";
 import { VoiceAvatar } from "@/components/common/voice-avatar";
 import { LanguageDropdown } from "@/components/common/dropdown/language-dropdown";
-import { Search } from "lucide-react";
+import { Search, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import VoiceSkeleton from "@/components/common/skeletons/voice-skeleton";
 import Image from "next/image";
 import { useVoices } from "@/hooks/useVoicesApi";
+import { useCreateSpeechRequest } from "@/hooks/useSpeechRequestApi";
 
 // Local interface that matches component expectations
 export interface Voice {
@@ -28,6 +29,7 @@ interface TextToSpeechToolProps {
   onPromptChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   selectedVoice?: Voice | null;
   onVoiceSelect?: (voice: Voice | null) => void;
+  onSubmitReady?: (submitFn: () => Promise<void>) => void;
 }
 
 export const languages = [
@@ -60,6 +62,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   onPromptChange,
   selectedVoice,
   onVoiceSelect,
+  onSubmitReady,
 }) => {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,6 +71,12 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   const [allVoices, setAllVoices] = useState<Voice[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isPaginationLoading, setIsPaginationLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  // Create speech request mutation
+  const { mutateAsync: createSpeechRequest } = useCreateSpeechRequest();
 
   // Search input handler with debounce
   useEffect(() => {
@@ -227,6 +236,48 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
     onVoiceSelect?.(voice);
   };
 
+  // Handle speech request submission
+  const handleSubmit = async () => {
+    // Validate input
+    if (!prompt.trim()) {
+      setSubmitError("Please enter text to convert to speech");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setSubmitError("");
+      setSubmitSuccess(false);
+
+      // Create the speech request
+      await createSpeechRequest({
+        prompt: prompt,
+        type: "text-to-speech",
+        voiceId: selectedVoice?.id,
+      });
+
+      // Show success message
+      setSubmitSuccess(true);
+
+      // Reset after 3 seconds
+      setTimeout(() => {
+        setSubmitSuccess(false);
+      }, 3000);
+    } catch (error) {
+      console.error("Failed to submit speech request:", error);
+      setSubmitError("Failed to submit request. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Expose handleSubmit to parent component
+  useEffect(() => {
+    if (onSubmitReady) {
+      onSubmitReady(handleSubmit);
+    }
+  }, [onSubmitReady, prompt, selectedVoice]);
+
   const renderVoiceContent = () => {
     // Only show skeleton during initial load (page 1) or when search is being typed
     if ((loading && currentPage === 1) || isSearching) {
@@ -312,7 +363,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
         {/* Using CSS mask for fade effect */}
         <div
           ref={scrollContainerRef}
-          className="grid max-h-48 min-h-48 grid-cols-3 md:grid-cols-4 gap-4 overflow-y-auto pt-1 transition-all duration-200 ease-in-out scrollbar-hide scroll-fade-mask relative"
+          className="grid max-h-48 min-h-48 grid-cols-3 md:grid-cols-4 gap-4 overflow-y-auto pt-1 transition-all duration-200 ease-in-out scroll-fade-mask relative hide-scrollbar"
           style={{ willChange: "transform" }} // Optimize rendering
         >
           {renderVoiceContent()}
@@ -365,6 +416,22 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
             maxHeight={150}
             className="px-0"
           />
+
+          {/* Error message */}
+          {submitError && (
+            <div className="flex items-center gap-1 mt-2 text-red-500 text-xs">
+              <AlertCircle size={14} />
+              <span>{submitError}</span>
+            </div>
+          )}
+
+          {/* Success message */}
+          {submitSuccess && (
+            <div className="flex items-center gap-1 mt-2 text-green-500 text-xs">
+              <CheckCircle2 size={14} />
+              <span>Successfully submitted!</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
