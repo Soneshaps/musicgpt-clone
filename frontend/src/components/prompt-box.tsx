@@ -1,6 +1,6 @@
 import { CreateAnythingTool, SongMode } from "./tools/create-anything-tool";
 import { FormActions } from "./tools/form-actions";
-import { TextToSpeechTool } from "./tools/text-to-speech-tool";
+import { TextToSpeechTool, Voice } from "./tools/text-to-speech-tool";
 import { ToolType } from "./music-gpt-interface";
 import { ChangeEvent, useState } from "react";
 import { twclsx } from "@/utils/twclsx";
@@ -15,6 +15,7 @@ const PromptBox = ({
   const [activeMode, setActiveMode] = useState<SongMode | null>(null);
   const [prompt, setPrompt] = useState<string>("");
   const [lyrics, setLyrics] = useState<string>("");
+  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
 
   const handlePromptChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);
@@ -43,8 +44,8 @@ const PromptBox = ({
               <TextToSpeechTool
                 prompt={prompt}
                 onPromptChange={handlePromptChange}
-                selectedVoice={null}
-                onVoiceSelect={() => {}}
+                selectedVoice={selectedVoice}
+                onVoiceSelect={setSelectedVoice}
               />
             )}
           </div>

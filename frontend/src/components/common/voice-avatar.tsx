@@ -1,5 +1,6 @@
 import { twclsx } from "@/utils/twclsx";
-import { FC } from "react";
+import { FC, useState } from "react";
+import Image from "next/image";
 
 interface VoiceAvatarProps {
   name: string;
@@ -8,6 +9,7 @@ interface VoiceAvatarProps {
   className?: string;
   hideName?: boolean;
   size?: number;
+  showPlayButton?: boolean;
 }
 
 export const VoiceAvatar: FC<VoiceAvatarProps> = ({
@@ -17,28 +19,32 @@ export const VoiceAvatar: FC<VoiceAvatarProps> = ({
   className = "",
   hideName = false,
   size,
+  showPlayButton = true,
 }) => {
   const firstLetter = name.charAt(0).toUpperCase();
   const lastname = name.split(" ")[1]?.charAt(0).toUpperCase();
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div
       className={twclsx(
         "flex cursor-pointer flex-col items-center gap-2 transition-all duration-200",
         {
           "scale-105": isSelected,
-          "hover:scale-105": !isSelected,
+          // "hover:scale-105": !isSelected,
         },
         className
       )}
       onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div
         style={{ width: size, height: size }}
         className={twclsx(
-          "flex h-11 w-11 items-center justify-center rounded-full border-2 border-transparent text-base font-medium transition-all duration-200",
+          "flex h-11 w-11 items-center justify-center rounded-full border-2 border-transparent text-base font-medium transition-all duration-200 relative",
           {
-            "border-orange-purple bg-neutral-light text-neutral-black ":
-              isSelected,
+            "border-[#ff6200] bg-neutral-light text-neutral-black ": isSelected,
             "bg-neutral-hover text-neutral-light hover:bg-neutral-light/20":
               !isSelected,
           }
@@ -46,6 +52,17 @@ export const VoiceAvatar: FC<VoiceAvatarProps> = ({
       >
         {firstLetter}
         {lastname}
+
+        {showPlayButton && isHovered && (
+          <div className="absolute -bottom-1 -right-2 flex items-center justify-center h-6 w-6 rounded-full drop-shadow-lg border-2 border-[#272A2E] bg-white">
+            <Image
+              src="/svg/icon-control-play-gray.svg"
+              alt="Play"
+              width={16}
+              height={16}
+            />
+          </div>
+        )}
       </div>
       {!hideName && (
         <span className="text-center text-sm text-neutral-sub-text w-[85px] overflow-hidden text-ellipsis whitespace-nowrap">

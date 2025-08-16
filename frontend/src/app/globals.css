@@ -36,6 +36,23 @@
     font-size: 2rem;
     line-height: 1.5;
   }
+
+  .scroll-fade-mask {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      black 10%,
+      black 90%,
+      transparent
+    );
+  }
 }
 
 @layer components {

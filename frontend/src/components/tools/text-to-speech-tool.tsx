@@ -104,13 +104,15 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   const currentPage = 1;
   const lastVoiceRef = useRef<HTMLDivElement>(null);
 
+  console.log(selectedVoice);
+
   const handleVoiceClick = (voice: Voice) => {
     onVoiceSelect?.(voice);
   };
 
   const renderVoiceContent = () => {
     // Show skeleton during initial load or when search is being typed
-    if (loading && currentPage === 1) {
+    if (loading || isSearching) {
       return <VoiceSkeleton />;
     }
     // Show no results state
@@ -200,7 +202,8 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
           />
         </div>
 
-        <div className="grid max-h-48 min-h-48 grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto pt-1 transition-all duration-200 ease-in-out scrollbar-hide">
+        {/* Using CSS mask for fade effect */}
+        <div className="grid max-h-48 min-h-48 grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto pt-1 transition-all duration-200 ease-in-out scrollbar-hide scroll-fade-mask">
           {renderVoiceContent()}
         </div>
       </div>
@@ -213,7 +216,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
                 name={selectedVoice?.name || "Default Voice"}
                 isSelected={true}
                 hideName
-                size={24}
+                size={40}
                 className="flex-row gap-2"
               />
               <span className="text-body-base font-semibold text-neutral-light">
