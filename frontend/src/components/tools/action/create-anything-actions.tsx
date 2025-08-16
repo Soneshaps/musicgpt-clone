@@ -1,16 +1,15 @@
 import Button from "@/components/common/button/button";
 import { Paperclip, AudioLines, Plus } from "lucide-react";
 import { twclsx } from "@/utils/twclsx";
-import { ToolType } from "@/components/music-gpt-interface";
-import { SongMode } from "../create-anything-tool";
 import { ChangeEvent, useRef } from "react";
 import { ButtonVariants } from "@/components/common/button";
+import { CreateAnythingMode } from "../create-anything-tool";
 
 interface CreateAnythingActionsProps {
-  activeMode: SongMode | null;
+  activeMode: CreateAnythingMode | null;
   handleFileButtonClick: () => void;
   onFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleModeToggle: (mode: SongMode) => void;
+  handleModeToggle: (mode: CreateAnythingMode | null) => void;
 }
 
 const CreateAnythingActions = ({
@@ -20,6 +19,14 @@ const CreateAnythingActions = ({
   handleModeToggle,
 }: CreateAnythingActionsProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleModeToggleClick = (mode: CreateAnythingMode) => {
+    if (activeMode === mode) {
+      handleModeToggle(null);
+    } else {
+      handleModeToggle(mode);
+    }
+  };
 
   return (
     <div className="flex gap-2">
@@ -41,11 +48,11 @@ const CreateAnythingActions = ({
         variant={ButtonVariants.PRIMARY}
         className={twclsx("transform transition-all duration-300 ease-in-out", {
           "scale-105 border-neutral-light bg-neutral-light/20 shadow-lg hover:border-neutral-light hover:!bg-neutral-light/20":
-            activeMode === SongMode.INSTRUMENTAL,
+            activeMode === CreateAnythingMode.INSTRUMENTAL,
           "hover:scale-105 active:scale-95":
-            activeMode !== SongMode.INSTRUMENTAL,
+            activeMode !== CreateAnythingMode.INSTRUMENTAL,
         })}
-        onClick={() => handleModeToggle(SongMode.INSTRUMENTAL)}
+        onClick={() => handleModeToggleClick(CreateAnythingMode.INSTRUMENTAL)}
       >
         <AudioLines
           height={16}
@@ -53,8 +60,8 @@ const CreateAnythingActions = ({
           className={twclsx(
             "text-neutral-light transition-transform duration-200",
             {
-              "scale-110": activeMode === SongMode.INSTRUMENTAL,
-              "scale-100": activeMode !== SongMode.INSTRUMENTAL,
+              "scale-110": activeMode === CreateAnythingMode.INSTRUMENTAL,
+              "scale-100": activeMode !== CreateAnythingMode.INSTRUMENTAL,
             }
           )}
         />
@@ -64,10 +71,11 @@ const CreateAnythingActions = ({
         variant={ButtonVariants.PRIMARY}
         className={twclsx("transform transition-all duration-300 ease-in-out", {
           "scale-105 border-neutral-light bg-neutral-light/20 shadow-lg hover:border-neutral-light hover:!bg-neutral-light/20":
-            activeMode === SongMode.LYRICS,
-          "hover:scale-105 active:scale-95": activeMode !== SongMode.LYRICS,
+            activeMode === CreateAnythingMode.LYRICS,
+          "hover:scale-105 active:scale-95":
+            activeMode !== CreateAnythingMode.LYRICS,
         })}
-        onClick={() => handleModeToggle(SongMode.LYRICS)}
+        onClick={() => handleModeToggleClick(CreateAnythingMode.LYRICS)}
       >
         <Plus
           height={16}
@@ -75,8 +83,8 @@ const CreateAnythingActions = ({
           className={twclsx(
             "text-neutral-light transition-transform duration-200",
             {
-              "rotate-45": activeMode === SongMode.LYRICS,
-              "rotate-0": activeMode !== SongMode.LYRICS,
+              "rotate-45": activeMode === CreateAnythingMode.LYRICS,
+              "rotate-0": activeMode !== CreateAnythingMode.LYRICS,
             }
           )}
         />

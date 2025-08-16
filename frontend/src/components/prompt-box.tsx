@@ -1,11 +1,13 @@
-import { CreateAnythingTool, SongMode } from "./tools/create-anything-tool";
+import { CreateAnythingTool } from "./tools/create-anything-tool";
 import { FormActions } from "./tools/form-actions";
-import { TextToSpeechTool, Voice } from "./tools/text-to-speech-tool";
+import { TextToSpeechTool } from "./tools/text-to-speech-tool";
 import { ToolType } from "./music-gpt-interface";
-import { ChangeEvent, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { twclsx } from "@/utils/twclsx";
 import CreateAnythingActions from "./tools/action/create-anything-actions";
 import { ToolsDropdown } from "./common/dropdown/tools-dropdown";
+import { useCreateAnythingTool } from "@/hooks/useCreateAnythingTool";
+import { useTextToSpeechTool } from "@/hooks/useTextToSpeechTool";
 
 const PromptBox = ({
   selectedTool,
@@ -14,26 +16,32 @@ const PromptBox = ({
   selectedTool: ToolType;
   setSelectedTool: (tool: ToolType) => void;
 }) => {
-  const [activeMode, setActiveMode] = useState<SongMode | null>(null);
-  const [prompt, setPrompt] = useState<string>("");
-  const [lyrics, setLyrics] = useState<string>("");
-  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [textToSpeechSubmit, setTextToSpeechSubmit] = useState<
-    (() => Promise<void>) | null
-  >(null);
 
-  const handlePromptChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setPrompt(e.target.value);
-  };
+  const {
+    activeMode,
+    setActiveMode,
+    createAnythingPrompt,
+    handlePromptChange,
+    lyrics,
+    handleLyricsChange,
+  } = useCreateAnythingTool();
 
-  const handleLyricsChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setLyrics(e.target.value);
-  };
+  const {
+    textToSpeechPrompt,
+    handleTextToSpeechPromptChange,
+    textToSpeechSubmit,
+    setTextToSpeechSubmit,
+    selectedVoice,
+    setSelectedVoice,
+  } = useTextToSpeechTool();
 
-  const handleSubmitReady = useCallback((submitFn: () => Promise<void>) => {
-    setTextToSpeechSubmit(() => submitFn);
-  }, []);
+  const handleTextToSpeechSubmitReady = useCallback(
+    (submitFn: () => Promise<void>) => {
+      setTextToSpeechSubmit(() => submitFn);
+    },
+    []
+  );
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -65,11 +73,11 @@ const PromptBox = ({
           >
             {selectedTool === ToolType.TEXT_TO_SPEECH && (
               <TextToSpeechTool
-                prompt={prompt}
-                onPromptChange={handlePromptChange}
+                prompt={textToSpeechPrompt}
+                onPromptChange={handleTextToSpeechPromptChange}
                 selectedVoice={selectedVoice}
                 onVoiceSelect={setSelectedVoice}
-                onSubmitReady={handleSubmitReady}
+                onSubmitReady={handleTextToSpeechSubmitReady}
               />
             )}
           </div>
@@ -84,7 +92,7 @@ const PromptBox = ({
           >
             {selectedTool === ToolType.CREATE_ANYTHING && (
               <CreateAnythingTool
-                prompt={prompt}
+                prompt={createAnythingPrompt}
                 lyrics={lyrics}
                 activeMode={activeMode}
                 onPromptChange={handlePromptChange}
@@ -116,8 +124,10 @@ const PromptBox = ({
                 <FormActions
                   isButtonEnabled={
                     selectedTool === ToolType.TEXT_TO_SPEECH
-                      ? Boolean(prompt.trim())
-                      : true
+                      ? Boolean(textToSpeechPrompt.trim())
+                      : selectedTool === ToolType.CREATE_ANYTHING
+                      ? Boolean(createAnythingPrompt.trim())
+                      : false
                   }
                   isLoading={isLoading}
                   onSubmit={handleSubmit}

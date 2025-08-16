@@ -11,7 +11,7 @@ import {
 import { Textarea } from "../common/input/textarea";
 import { VoiceAvatar } from "@/components/common/voice-avatar";
 import { LanguageDropdown } from "@/components/common/dropdown/language-dropdown";
-import { Search, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Search, CheckCircle2, AlertCircle } from "lucide-react";
 import VoiceSkeleton from "@/components/common/skeletons/voice-skeleton";
 import Image from "next/image";
 import { useVoices } from "@/hooks/useVoicesApi";
