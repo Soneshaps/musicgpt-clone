@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
 
 // Create an Axios instance with default config
 const axiosClient: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001", // Default to localhost if not set
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000", // Default to localhost if not set
   headers: {
     "Content-Type": "application/json",
   },

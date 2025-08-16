@@ -2,11 +2,11 @@
 
 import {
   useRef,
-  useCallback,
   FC,
   ChangeEvent,
-  useEffect,
   useState,
+  useEffect,
+  useCallback,
 } from "react";
 import { Textarea } from "../common/input/textarea";
 import { VoiceAvatar } from "@/components/common/voice-avatar";
@@ -14,8 +14,11 @@ import { LanguageDropdown } from "@/components/common/dropdown/language-dropdown
 import { Search } from "lucide-react";
 import VoiceSkeleton from "@/components/common/skeletons/voice-skeleton";
 import Image from "next/image";
+import { useVoices } from "@/hooks/useVoicesApi";
 
+// Local interface that matches component expectations
 export interface Voice {
+  id?: string;
   name: string;
   language: string;
 }
@@ -50,40 +53,7 @@ export const languages = [
   },
 ];
 
-export const VOICES_DATA: Voice[] = [
-  { name: "Emma Watson", language: "english" },
-  { name: "Morgan Freeman", language: "english" },
-  { name: "Scarlett Johansson", language: "english" },
-  { name: "Tom Hanks", language: "english" },
-  { name: "Jennifer Lawrence", language: "english" },
-  { name: "Leonardo DiCaprio", language: "english" },
-  { name: "Meryl Streep", language: "english" },
-  { name: "Brad Pitt", language: "english" },
-  { name: "Angelina Jolie", language: "english" },
-  { name: "Johnny Depp", language: "english" },
-
-  { name: "Narayan Gopal", language: "nepali" },
-  { name: "Ambar Gurung", language: "nepali" },
-  { name: "Tara Devi", language: "nepali" },
-  { name: "Kumar Basnet", language: "nepali" },
-  { name: "Sabin Rai", language: "nepali" },
-  { name: "Deepak Bajracharya", language: "nepali" },
-  { name: "Nepathya", language: "nepali" },
-  { name: "Phiroj Shyangden", language: "nepali" },
-  { name: "Adrian Pradhan", language: "nepali" },
-  { name: "Swoopna Suman", language: "nepali" },
-
-  { name: "Amitabh Bachchan", language: "indian" },
-  { name: "Lata Mangeshkar", language: "indian" },
-  { name: "Shah Rukh Khan", language: "indian" },
-  { name: "Aishwarya Rai", language: "indian" },
-  { name: "Priyanka Chopra", language: "indian" },
-  { name: "Deepika Padukone", language: "indian" },
-  { name: "Ranbir Kapoor", language: "indian" },
-  { name: "Alia Bhatt", language: "indian" },
-  { name: "Aamir Khan", language: "indian" },
-  { name: "Kajol", language: "indian" },
-];
+// Mock data removed - now using API
 
 export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   prompt,
@@ -91,28 +61,155 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   selectedVoice,
   onVoiceSelect,
 }) => {
-  const voices: Voice[] = VOICES_DATA;
-  const loading = false;
-  const isSearching = false;
-  const searchQuery = "";
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [allVoices, setAllVoices] = useState<Voice[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [isPaginationLoading, setIsPaginationLoading] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<{
     value: string;
     label: string;
     flag: string;
   }>(languages[0]);
-  const currentPage = 1;
-  const lastVoiceRef = useRef<HTMLDivElement>(null);
 
-  console.log(selectedVoice);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastVoiceRef = useRef<HTMLDivElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  // Fetch voices from API
+  const {
+    data: voicesData,
+    isLoading: loading,
+    error,
+    isFetching,
+  } = useVoices({
+    page: currentPage,
+    limit: 12, // Changed from 15 to 12
+    language:
+      selectedLanguage.value === "All Languages"
+        ? undefined
+        : selectedLanguage.value,
+  });
+
+  // Improved intersection observer setup
+  const lastVoiceCallback = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node) return;
+
+      console.log("Setting up intersection observer on node");
+
+      // Always disconnect previous observer before creating a new one
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+
+      // Create a new intersection observer
+      const observer = new IntersectionObserver(
+        (entries) => {
+          // If the last element is intersecting and we have more data to load
+          if (
+            entries[0].isIntersecting &&
+            hasMore &&
+            !loading &&
+            !isFetching &&
+            currentPage > 0
+          ) {
+            console.log("Last item intersected, loading more data");
+            // Set loading state
+            setIsPaginationLoading(true);
+
+            // Load next page with a short delay
+            setTimeout(() => {
+              setCurrentPage((prev) => prev + 1);
+            }, 500);
+          }
+        },
+        {
+          root: scrollContainerRef.current, // Only trigger when visible in the scroll container
+          threshold: 0.5, // Element must be 50% visible to trigger
+          rootMargin: "0px", // No extra margin
+        }
+      );
+
+      // Start observing this node
+      observer.observe(node);
+
+      // Save the observer
+      observerRef.current = observer;
+
+      // Clean up the observer when the component unmounts
+      return () => {
+        observer.disconnect();
+      };
+    },
+    [hasMore, loading, isFetching, currentPage, scrollContainerRef]
+  );
+
+  // Reset state when language or search query changes
+  useEffect(() => {
+    console.log("Language or search changed, resetting state");
+    setCurrentPage(1);
+    setAllVoices([]);
+    setHasMore(true);
+
+    // Clean up any existing observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+      observerRef.current = null;
+    }
+  }, [selectedLanguage, searchQuery]);
+
+  // Simplified data handling
+  useEffect(() => {
+    if (!voicesData) return;
+
+    // Reset loading state when new data arrives
+    setIsPaginationLoading(false);
+
+    console.log("Received voice data for page:", voicesData.pagination.page);
+    console.log("Total pages:", voicesData.pagination.pages);
+    console.log("Got", voicesData.voices.length, "voices");
+
+    if (currentPage === 1) {
+      // On first page, replace all voices
+      console.log("Setting initial voices data");
+      setAllVoices(voicesData.voices);
+    } else {
+      // On subsequent pages, append new voices
+      console.log("Appending new voices");
+      setAllVoices((prev) => {
+        // Create a Set of existing IDs for faster lookup
+        const existingIds = new Set(prev.map((voice) => voice.id));
+
+        // Filter out duplicates
+        const newVoices = voicesData.voices.filter(
+          (voice) => !existingIds.has(voice.id)
+        );
+        console.log("Adding", newVoices.length, "new voices");
+
+        // Return combined array
+        return [...prev, ...newVoices];
+      });
+    }
+
+    // Update hasMore flag
+    const { pagination } = voicesData;
+    const moreAvailable = pagination.page < pagination.pages;
+    console.log("Has more pages:", moreAvailable);
+    setHasMore(moreAvailable);
+  }, [voicesData, currentPage]);
+
+  // Use accumulated voices instead of just current page
+  const voices = allVoices;
 
   const handleVoiceClick = (voice: Voice) => {
     onVoiceSelect?.(voice);
   };
 
   const renderVoiceContent = () => {
-    // Show skeleton during initial load or when search is being typed
-    if (loading || isSearching) {
+    // Only show skeleton during initial load (page 1) or when search is being typed
+    if ((loading && currentPage === 1) || isSearching) {
       return <VoiceSkeleton />;
     }
     // Show no results state
@@ -144,11 +241,11 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
     return (
       <>
         {voices.map((voice, index) => {
-          const isLast = index === voices?.length - 1;
+          const isLast = index === voices.length - 1;
           return (
             <div
-              key={`${voice?.name}-${index}`}
-              ref={isLast ? lastVoiceRef : undefined}
+              key={`${voice?.id || voice?.name}-${index}`}
+              ref={isLast ? lastVoiceCallback : undefined}
             >
               <VoiceAvatar
                 name={voice?.name}
@@ -159,19 +256,8 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
           );
         })}
 
-        {loading && currentPage > 1 && (
-          <div className="col-span-4 flex justify-center py-4">
-            <div className="flex gap-2">
-              {Array.from({ length: 3 })?.map((_, index) => (
-                <div
-                  key={index}
-                  className="h-2 w-2 animate-bounce rounded-full bg-neutral-light"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Pagination loading - positioned directly under the fetched data */}
+        {isPaginationLoading && <VoiceSkeleton />}
       </>
     );
   };
@@ -192,7 +278,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
               type="text"
               placeholder="Search voices"
               value={searchQuery}
-              onChange={(e) => {}}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="block w-full text-[13px] rounded-full bg-neutral-hover pl-12 py-2 pr-10 text-pure-white transition-all duration-200 placeholder:text-neutral-sub-text"
             />
           </div>
@@ -203,7 +289,11 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
         </div>
 
         {/* Using CSS mask for fade effect */}
-        <div className="grid max-h-48 min-h-48 grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto pt-1 transition-all duration-200 ease-in-out scrollbar-hide scroll-fade-mask">
+        <div
+          ref={scrollContainerRef}
+          className="grid max-h-48 min-h-48 grid-cols-3 md:grid-cols-4 gap-4 overflow-y-auto pt-1 transition-all duration-200 ease-in-out scrollbar-hide scroll-fade-mask relative"
+          style={{ willChange: "transform" }} // Optimize rendering
+        >
           {renderVoiceContent()}
         </div>
       </div>
