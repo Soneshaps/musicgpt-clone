@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { inter } from "@/fonts/google-fonts";
 import "./globals.css";
+import { ReactQueryProvider } from "@/utils/react-query-provider";
 
 export const metadata: Metadata = {
   title: "MusicGPT",
@@ -14,7 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable}`}>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <ReactQueryProvider>{children}</ReactQueryProvider>
+      </body>
     </html>
   );
 }
