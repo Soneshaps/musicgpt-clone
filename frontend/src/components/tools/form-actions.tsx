@@ -121,7 +121,7 @@ export const FormActions: FC<FormActionsProps> = ({
           </>
         )}
       </div>
-      <div className="flex gap-1">
+      <div className="flex gap-3">
         <ToolsDropdown
           onToolChange={onToolChange}
           selectedTool={selectedTool}

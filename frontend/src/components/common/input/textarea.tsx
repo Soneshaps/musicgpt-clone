@@ -36,7 +36,7 @@ export const Textarea: FC<TextareaProps> = ({
       // Calculate new height based on content
       const newHeight = Math.min(
         Math.max(textarea.scrollHeight, minHeight),
-        maxHeight,
+        maxHeight
       );
       textarea.style.height = `${newHeight}px`;
     }
@@ -51,9 +51,9 @@ export const Textarea: FC<TextareaProps> = ({
       value={value}
       onChange={onChange}
       className={twclsx(
-        "block w-full resize-none bg-transparent p-5 text-left text-base leading-relaxed text-pure-white outline-none scrollbar-hide placeholder:text-neutral-400",
+        "block w-full resize-none bg-transparent p-5 text-left text-base leading-relaxed text-pure-white outline-none scrollbar-hide placeholder:text-neutral-sub-text",
         autoResize ? "" : "min-h-[120px]",
-        className,
+        className
       )}
     />
   );

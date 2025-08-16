@@ -50,16 +50,19 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
         <Textarea
           name="description"
           id="description"
-          placeholder="Describe what you want to create"
+          placeholder="Describe your song"
           value={prompt}
           onChange={onPromptChange}
           autoResize={true}
           minHeight={64}
           maxHeight={120}
-          className="!px-0 pt-0"
+          className="p-5"
         />
       </div>
 
+      {activeMode === "lyrics" && (
+        <div className="border-t border-neutral-sub-text"></div>
+      )}
       <AnimatePresence mode="wait">
         {activeMode === "lyrics" && (
           <motion.div
@@ -96,18 +99,17 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
                 delay: 0.1,
                 ease: [0.4, 0, 0.2, 1],
               }}
-              className="border-t border-neutral-hover pt-4"
             >
               <Textarea
                 name="lyrics"
                 id="lyrics"
-                placeholder="Write the lyrics"
+                placeholder="Add your lyrics"
                 value={lyrics}
                 onChange={onLyricsChange}
                 autoResize={true}
                 minHeight={64}
                 maxHeight={120}
-                className="!px-0 pt-0"
+                className="p-5"
               />
             </motion.div>
           </motion.div>

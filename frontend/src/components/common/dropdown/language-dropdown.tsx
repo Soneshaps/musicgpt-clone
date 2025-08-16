@@ -15,8 +15,8 @@ export const LanguageDropdown: FC<LanguageDropdownProps> = ({
 }) => {
   const selectedOption = {
     value: "all",
-    label: "All",
-    flag: "🌐",
+    label: "All Languages",
+    flag: "",
   };
 
   const handleLanguageSelect = (value: string) => {
@@ -26,14 +26,14 @@ export const LanguageDropdown: FC<LanguageDropdownProps> = ({
   return (
     <Dropdown
       label={
-        <div className="flex items-center gap-2">
+        <div className="flex w-[140px] items-center gap-2">
           <span className="text-sm">{selectedOption?.flag}</span>
-          <span className="text-sm font-medium text-pure-white">
+          <span className="text-xs font-medium text-pure-white">
             {selectedOption?.label}
           </span>
         </div>
       }
-      className="duration:100 group relative flex w-40 shrink-0 grow-0 select-none items-center justify-center gap-1 rounded-full border border-neutral-600 py-2 text-sm text-white transition-all duration-200 ease-in-out hover:cursor-pointer hover:border-neutral-600"
+      className="duration:100 group relative flex w-[140px] shrink-0 grow-0 select-none items-center justify-center gap-1 rounded-full border border-neutral-600 py-2 text-sm text-white transition-all duration-200 ease-in-out hover:cursor-pointer hover:border-neutral-600"
       align="center"
     >
       {[

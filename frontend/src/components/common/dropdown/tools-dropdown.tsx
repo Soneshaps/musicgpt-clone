@@ -1,9 +1,10 @@
 "use client";
 
 import { useRef, FC, ReactNode } from "react";
-import { Aperture, Check, ChevronDown, Type } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { Dropdown } from "@/components/common/dropdown";
 import Badge from "@/components/common/badge";
+import Image from "next/image";
 
 export type Tool = "Create anything" | "Text to Speech";
 
@@ -27,14 +28,28 @@ const tools: ToolOption[] = [
     label: "Tools",
     heading: "Create anything",
     description: "A Simple text to create it all",
-    icon: <Aperture height={20} width={20} className="text-neutral-light" />,
+    icon: (
+      <Image
+        src="/images/tool-icon-prompt.svg"
+        alt="Create anything"
+        width={20}
+        height={20}
+      />
+    ),
   },
   {
     id: "text-to-speech",
     label: "Text to Speech",
     heading: "Text to Speech",
     description: "Speak text in any voice",
-    icon: <Type height={20} width={20} className="text-neutral-light" />,
+    icon: (
+      <Image
+        src="/images/tool-icon-tts2.svg"
+        alt="Text to Speech"
+        width={20}
+        height={20}
+      />
+    ),
     hasBadge: true,
   },
 ];
@@ -61,7 +76,7 @@ export const ToolsDropdown: FC<ToolsDropdownProps> = ({
         align="right"
         isRelative={false}
         label={
-          <span className="flex items-center gap-1">
+          <span className="flex text-sm items-center gap-1">
             {activeTool?.label}
             <ChevronDown
               height={16}
@@ -73,23 +88,23 @@ export const ToolsDropdown: FC<ToolsDropdownProps> = ({
         className="py-2 pl-3 pr-2"
         showDropdownIcon={false}
       >
-        <div className="min-w-[400px] px-2.5 py-2 max-sm:min-w-[300px]">
+        <div className="min-w-[400px] max-sm:min-w-[300px]">
           {tools?.map((tool) => (
             <div
               key={tool?.id}
-              className="active:scale-98 relative flex cursor-pointer items-center justify-between gap-2.5 rounded-2xl bg-transparent px-2.5 py-2 transition-all duration-200 ease-in-out hover:scale-[1.02] hover:bg-black hover:bg-opacity-20"
+              className="active:scale-98 relative flex cursor-pointer items-center justify-between gap-2.5 rounded-2xl bg-transparent px-2.5 py-2 transition-all duration-200 ease-in-out hover:scale-[1.02] hover:bg-black/20"
               onClick={() => handleToolSelect(tool)}
             >
               <div className="flex min-w-0 flex-1 items-center gap-2.5">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-neutral-light/10">
                   {tool?.icon}
                 </div>
-                <div className="flex min-w-0 flex-col gap-0.5">
+                <div className="flex min-w-0 flex-col">
                   <span className="flex items-center text-sm font-medium tracking-wide text-neutral-light">
                     {tool?.heading}
                     {tool?.hasBadge && <Badge label="Plus" />}
                   </span>
-                  <span className="text-body-small tracking-wide text-neutral-sub-text">
+                  <span className="text-[13px] tracking-wide text-neutral-sub-text">
                     {tool?.description}
                   </span>
                 </div>

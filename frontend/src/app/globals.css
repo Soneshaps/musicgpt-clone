@@ -110,6 +110,9 @@
   .bg-neutral-light {
     background-color: #e4e6e8;
   }
+  .bg-neutral-light\/10 {
+    background-color: rgba(228, 230, 232, 0.1);
+  }
   .bg-neutral-light\/20 {
     background-color: rgba(228, 230, 232, 0.2);
   }
@@ -128,6 +131,13 @@
     border-color: #e4e6e8;
   }
 
+  .border-neutral-sub-text {
+    border-color: #6b7280;
+  }
+  .hover\:border-neutral-sub-text:hover {
+    border-color: #6b7280;
+  }
+
   .text-pure-white {
     color: #ffffff;
   }
@@ -140,6 +150,11 @@
   }
   .bg-pure-black {
     background-color: #000000;
+  }
+
+  /* Black with opacity */
+  .bg-black-opacity-20 {
+    background-color: rgba(0, 0, 0, 0.2);
   }
 
   .text-purple-primary {

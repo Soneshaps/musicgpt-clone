@@ -6,6 +6,7 @@ import { VoiceAvatar } from "@/components/common/voice-avatar";
 import { LanguageDropdown } from "@/components/common/dropdown/language-dropdown";
 import { Search } from "lucide-react";
 import VoiceSkeleton from "@/components/common/skeletons/voice-skeleton";
+import Image from "next/image";
 
 export interface Voice {
   name: string;
@@ -105,23 +106,23 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
 
   return (
     <div className="flex h-full w-full flex-col justify-between gap-6 p-5 pb-0 sm:flex-row">
-      <div className="hidden min-w-0 flex-1 flex-col gap-6 sm:flex">
+      <div className="hidden min-w-0 flex-col gap-6 sm:flex">
         <div className="flex gap-3">
-          <div className="relative flex w-full">
-            <input
-              type="text"
-              placeholder="Search for a voice"
-              value={searchQuery}
-              onChange={(e) => {}}
-              className="block w-full rounded-full bg-neutral-hover px-4 py-2 pr-10 text-pure-white transition-all duration-200 placeholder:text-neutral-sub-text"
-            />
+          <div className="relative flex w-[222px]">
             {isSearching ? (
-              <div className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2">
+              <div className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-sub-text border-t-neutral-light"></div>
               </div>
             ) : (
-              <Search className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-sub-text" />
+              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-sub-text" />
             )}
+            <input
+              type="text"
+              placeholder="Search voices"
+              value={searchQuery}
+              onChange={(e) => {}}
+              className="block w-full text-[13px] rounded-full bg-neutral-hover pl-12 py-2 pr-10 text-pure-white transition-all duration-200 placeholder:text-neutral-sub-text"
+            />
           </div>
           <LanguageDropdown
             selectedLanguage={selectedLanguage}
@@ -134,8 +135,8 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
         </div>
       </div>
 
-      <div className="mt-1 flex w-full flex-col gap-6 sm:w-1/3">
-        <div className="flex items-center gap-2">
+      <div className="flex w-full flex-col gap-6 sm:w-1/3">
+        <div className="flex items-center gap-[10px]">
           {selectedVoice ? (
             <>
               <VoiceAvatar
@@ -145,14 +146,23 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
                 size={24}
                 className="flex-row gap-2"
               />
-              <span className="text-body-base text-neutral-light">
+              <span className="text-body-base font-semibold text-neutral-light">
                 {selectedVoice?.name || "Default Voice"}
               </span>
             </>
           ) : (
             <>
-              <div className="h-6 w-6 rounded-full bg-neutral-light"></div>
-              <span className="text-body-base text-neutral-light">
+              <div>
+                <Image
+                  loading="lazy"
+                  src="https://musicgpt.s3.us-east-1.amazonaws.com/system_images/musicgpt-logo-on-dark-small-2.png"
+                  alt="Default Voice"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+              </div>
+              <span className="text-body-base font-semibold text-neutral-light">
                 Default Voice
               </span>
             </>
