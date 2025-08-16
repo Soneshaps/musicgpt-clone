@@ -5,8 +5,7 @@ import { Check, ChevronDown } from "lucide-react";
 import { Dropdown } from "@/components/common/dropdown";
 import Badge from "@/components/common/badge";
 import Image from "next/image";
-
-export type Tool = "Create anything" | "Text to Speech";
+import { ToolType } from "@/components/music-gpt-interface";
 
 interface ToolOption {
   id: string;
@@ -18,8 +17,8 @@ interface ToolOption {
 }
 
 interface ToolsDropdownProps {
-  onToolChange: (tool: Tool) => void;
-  selectedTool: Tool;
+  onToolChange: (tool: ToolType) => void;
+  selectedTool: ToolType;
 }
 
 const tools: ToolOption[] = [
@@ -60,11 +59,17 @@ export const ToolsDropdown: FC<ToolsDropdownProps> = ({
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const activeTool =
-    tools?.find((tool) => tool?.heading === selectedTool) || tools[0];
+  const toolTypetoTooloptionmap = {
+    [ToolType.CREATE_ANYTHING]: tools[0],
+    [ToolType.TEXT_TO_SPEECH]: tools[1],
+  };
+
+  const activeTool = toolTypetoTooloptionmap[selectedTool]
+    ? toolTypetoTooloptionmap[selectedTool]
+    : tools[0];
 
   const handleToolSelect = (tool: ToolOption) => {
-    onToolChange(tool?.heading as Tool);
+    onToolChange(tool?.heading as ToolType);
     setTimeout(() => {
       document.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
     }, 0);

@@ -4,6 +4,8 @@ import { TextToSpeechTool, Voice } from "./tools/text-to-speech-tool";
 import { ToolType } from "./music-gpt-interface";
 import { ChangeEvent, useState, useCallback } from "react";
 import { twclsx } from "@/utils/twclsx";
+import CreateAnythingActions from "./tools/action/create-anything-actions";
+import { ToolsDropdown } from "./common/dropdown/tools-dropdown";
 
 const PromptBox = ({
   selectedTool,
@@ -34,18 +36,15 @@ const PromptBox = ({
   }, []);
 
   const handleSubmit = async () => {
-    if (selectedTool === ToolType.TEXT_TO_SPEECH && textToSpeechSubmit) {
-      setIsLoading(true);
-      try {
+    setIsLoading(true);
+    try {
+      if (selectedTool === ToolType.TEXT_TO_SPEECH && textToSpeechSubmit) {
         await textToSpeechSubmit();
-      } catch (error) {
-        console.error("Error submitting text to speech:", error);
-      } finally {
-        setIsLoading(false);
       }
-    } else if (selectedTool === ToolType.CREATE_ANYTHING) {
-      // Handle create anything submission logic here
-      console.log("Create anything submitted:", { prompt, lyrics, activeMode });
+    } catch (error) {
+      console.error("Error submitting text to speech:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -95,20 +94,36 @@ const PromptBox = ({
           </div>
 
           <div className="px-5">
-            <FormActions
-              activeMode={activeMode}
-              selectedTool={selectedTool}
-              isButtonEnabled={
-                selectedTool === ToolType.TEXT_TO_SPEECH
-                  ? Boolean(prompt.trim())
-                  : true
-              }
-              isLoading={isLoading}
-              onModeToggle={setActiveMode}
-              onToolChange={setSelectedTool}
-              onFileChange={() => {}}
-              onSubmit={handleSubmit}
-            />
+            {selectedTool === ToolType.CREATE_ANYTHING && (
+              <CreateAnythingActions
+                activeMode={activeMode}
+                handleFileButtonClick={() => {
+                  console.log("File button clicked");
+                }}
+                onFileChange={() => {
+                  console.log("File changed");
+                }}
+                handleModeToggle={setActiveMode}
+              />
+            )}
+            <div className="absolute bottom-3 right-3">
+              <div className="flex gap-3">
+                <ToolsDropdown
+                  onToolChange={setSelectedTool}
+                  selectedTool={selectedTool}
+                />
+
+                <FormActions
+                  isButtonEnabled={
+                    selectedTool === ToolType.TEXT_TO_SPEECH
+                      ? Boolean(prompt.trim())
+                      : true
+                  }
+                  isLoading={isLoading}
+                  onSubmit={handleSubmit}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </form>
