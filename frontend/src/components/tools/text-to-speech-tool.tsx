@@ -50,13 +50,48 @@ export const languages = [
   },
 ];
 
+export const VOICES_DATA: Voice[] = [
+  { name: "Emma Watson", language: "english" },
+  { name: "Morgan Freeman", language: "english" },
+  { name: "Scarlett Johansson", language: "english" },
+  { name: "Tom Hanks", language: "english" },
+  { name: "Jennifer Lawrence", language: "english" },
+  { name: "Leonardo DiCaprio", language: "english" },
+  { name: "Meryl Streep", language: "english" },
+  { name: "Brad Pitt", language: "english" },
+  { name: "Angelina Jolie", language: "english" },
+  { name: "Johnny Depp", language: "english" },
+
+  { name: "Narayan Gopal", language: "nepali" },
+  { name: "Ambar Gurung", language: "nepali" },
+  { name: "Tara Devi", language: "nepali" },
+  { name: "Kumar Basnet", language: "nepali" },
+  { name: "Sabin Rai", language: "nepali" },
+  { name: "Deepak Bajracharya", language: "nepali" },
+  { name: "Nepathya", language: "nepali" },
+  { name: "Phiroj Shyangden", language: "nepali" },
+  { name: "Adrian Pradhan", language: "nepali" },
+  { name: "Swoopna Suman", language: "nepali" },
+
+  { name: "Amitabh Bachchan", language: "indian" },
+  { name: "Lata Mangeshkar", language: "indian" },
+  { name: "Shah Rukh Khan", language: "indian" },
+  { name: "Aishwarya Rai", language: "indian" },
+  { name: "Priyanka Chopra", language: "indian" },
+  { name: "Deepika Padukone", language: "indian" },
+  { name: "Ranbir Kapoor", language: "indian" },
+  { name: "Alia Bhatt", language: "indian" },
+  { name: "Aamir Khan", language: "indian" },
+  { name: "Kajol", language: "indian" },
+];
+
 export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   prompt,
   onPromptChange,
   selectedVoice,
   onVoiceSelect,
 }) => {
-  const voices: Voice[] = [];
+  const voices: Voice[] = VOICES_DATA;
   const loading = false;
   const isSearching = false;
   const searchQuery = "";
@@ -165,7 +200,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
           />
         </div>
 
-        <div className="grid max-h-48 min-h-48 grid-cols-4 gap-4 overflow-y-auto pt-1 transition-all duration-200 ease-in-out scrollbar-hide">
+        <div className="grid max-h-48 min-h-48 grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto pt-1 transition-all duration-200 ease-in-out scrollbar-hide">
           {renderVoiceContent()}
         </div>
       </div>
