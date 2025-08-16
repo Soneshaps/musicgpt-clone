@@ -91,6 +91,9 @@
   .bg-neutral-hover {
     background-color: #3a3e42;
   }
+  .hover\:bg-neutral-hover:hover {
+    background-color: #3a3e42;
+  }
 
   .text-neutral-sub-text {
     color: #6b7280;

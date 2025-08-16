@@ -1,6 +1,13 @@
 "use client";
 
-import { useRef, useCallback, FC, ChangeEvent, useEffect } from "react";
+import {
+  useRef,
+  useCallback,
+  FC,
+  ChangeEvent,
+  useEffect,
+  useState,
+} from "react";
 import { Textarea } from "../common/input/textarea";
 import { VoiceAvatar } from "@/components/common/voice-avatar";
 import { LanguageDropdown } from "@/components/common/dropdown/language-dropdown";
@@ -20,6 +27,29 @@ interface TextToSpeechToolProps {
   onVoiceSelect?: (voice: Voice | null) => void;
 }
 
+export const languages = [
+  {
+    value: "All Languages",
+    label: "All",
+    flag: "🌐",
+  },
+  {
+    value: "English",
+    label: "English",
+    flag: "🇺🇸",
+  },
+  {
+    value: "Indian",
+    label: "Indian",
+    flag: "🇮🇳",
+  },
+  {
+    value: "Nepali",
+    label: "Nepali",
+    flag: "🇳🇵",
+  },
+];
+
 export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   prompt,
   onPromptChange,
@@ -30,7 +60,12 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   const loading = false;
   const isSearching = false;
   const searchQuery = "";
-  const selectedLanguage = "all";
+
+  const [selectedLanguage, setSelectedLanguage] = useState<{
+    value: string;
+    label: string;
+    flag: string;
+  }>(languages[0]);
   const currentPage = 1;
   const lastVoiceRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +90,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
               No voices match &quot;{searchQuery}&quot;. Try a different search
               term or clear the filter.
             </div>
-          ) : selectedLanguage !== "all" ? (
+          ) : selectedLanguage.value !== "All Languages" ? (
             <div className="text-xs text-neutral-sub-text">
               No voices available for the selected language.
             </div>
@@ -126,7 +161,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
           </div>
           <LanguageDropdown
             selectedLanguage={selectedLanguage}
-            onLanguageChange={() => {}}
+            onLanguageChange={setSelectedLanguage}
           />
         </div>
 
@@ -135,7 +170,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
         </div>
       </div>
 
-      <div className="flex w-full flex-col gap-6 sm:w-1/3">
+      <div className="flex w-full flex-col gap-1 sm:w-1/3">
         <div className="flex items-center gap-[10px]">
           {selectedVoice ? (
             <>
@@ -173,12 +208,13 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
           <Textarea
             name="text-to-speech"
             id="text-to-speech"
-            placeholder="Write the lyrics"
+            placeholder="Enter text"
             value={prompt}
             onChange={onPromptChange}
             autoResize={true}
             minHeight={80}
             maxHeight={150}
+            className="px-0"
           />
         </div>
       </div>
