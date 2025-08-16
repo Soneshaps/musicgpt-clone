@@ -25,6 +25,8 @@ const PromptBox = ({
     handlePromptChange,
     lyrics,
     handleLyricsChange,
+    createAnythingSubmit,
+    handleCreateAnythingSubmitReady,
   } = useCreateAnythingTool();
 
   const {
@@ -48,6 +50,9 @@ const PromptBox = ({
     try {
       if (selectedTool === ToolType.TEXT_TO_SPEECH && textToSpeechSubmit) {
         await textToSpeechSubmit();
+      }
+      if (selectedTool === ToolType.CREATE_ANYTHING && createAnythingSubmit) {
+        await createAnythingSubmit();
       }
     } catch (error) {
       console.error("Error submitting text to speech:", error);
@@ -97,6 +102,7 @@ const PromptBox = ({
                 activeMode={activeMode}
                 onPromptChange={handlePromptChange}
                 onLyricsChange={handleLyricsChange}
+                onSubmitReady={handleCreateAnythingSubmitReady}
               />
             )}
           </div>

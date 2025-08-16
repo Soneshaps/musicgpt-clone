@@ -1,7 +1,8 @@
 import { Textarea } from "../common/input/textarea";
 import { FileAttachment } from "../common/file-attachment";
-import { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useCreateSpeechRequest } from "@/hooks/useSpeechRequestApi";
 
 export enum CreateAnythingMode {
   INSTRUMENTAL = "instrumental",
@@ -16,6 +17,7 @@ interface CreateAnythingToolProps {
   onPromptChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   onLyricsChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   onFileRemove?: () => void;
+  onSubmitReady?: (submitFn: () => Promise<void>) => void;
 }
 
 export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
@@ -26,7 +28,31 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
   onPromptChange,
   onLyricsChange,
   onFileRemove,
+  onSubmitReady,
 }) => {
+  const { mutateAsync: createSpeechRequest } = useCreateSpeechRequest();
+
+  // Handle submission logic
+  const handleSubmit = async () => {
+    // Validate input
+    if (!prompt.trim()) {
+      return;
+    }
+
+    await createSpeechRequest({
+      prompt: prompt,
+      type: "create-anything",
+      lyrics: lyrics,
+    });
+  };
+
+  // Expose handleSubmit to parent component
+  useEffect(() => {
+    if (onSubmitReady) {
+      onSubmitReady(handleSubmit);
+    }
+  }, [onSubmitReady, prompt, lyrics, activeMode, selectedFile]);
+
   return (
     <div className="relative flex flex-col ">
       <AnimatePresence mode="wait">

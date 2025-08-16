@@ -2,10 +2,11 @@
 
 import { usePostMutation } from "@/utils/api-client";
 import { ApiResponse } from "@/types/api";
+import { ToolType } from "@/components/music-gpt-interface";
 
 export interface SpeechRequest {
   prompt: string;
-  type: "text-to-speech" | "song" | "podcast" | "story";
+  type: "text-to-speech" | "create-anything";
   lyrics?: string;
   voiceId?: string;
 }
@@ -39,4 +40,3 @@ export const useCreateSpeechRequest = () => {
     }
   );
 };
-

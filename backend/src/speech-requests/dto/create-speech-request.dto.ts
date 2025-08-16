@@ -23,11 +23,11 @@ export class CreateSpeechRequestDto {
   @ApiProperty({
     description: 'The type of speech request',
     example: 'text-to-speech',
-    enum: ['text-to-speech', 'song', 'podcast', 'story'],
+    enum: ['text-to-speech', 'create-anything'],
   })
   @IsString()
   @IsNotEmpty()
-  @IsIn(['text-to-speech', 'song', 'podcast', 'story'])
+  @IsIn(['text-to-speech', 'create-anything'])
   type: string;
 
   @ApiPropertyOptional({
