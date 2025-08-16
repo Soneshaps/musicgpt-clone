@@ -61,25 +61,33 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   selectedVoice,
   onVoiceSelect,
 }) => {
-  // UI state
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [allVoices, setAllVoices] = useState<Voice[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [isPaginationLoading, setIsPaginationLoading] = useState(false);
+
+  // Search input handler with debounce
+  useEffect(() => {
+    setIsSearching(true);
+    const timer = setTimeout(() => {
+      setSearchQuery(searchInputValue);
+      setIsSearching(false);
+    }, 500); // 500ms debounce delay
+
+    return () => clearTimeout(timer);
+  }, [searchInputValue]);
   const [selectedLanguage, setSelectedLanguage] = useState<{
     value: string;
     label: string;
     flag: string;
   }>(languages[0]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isPaginationLoading, setIsPaginationLoading] = useState(false);
-  const [allVoices, setAllVoices] = useState<Voice[]>([]);
-
-  // Refs
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const lastVoiceRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastVoiceRef = useRef<HTMLDivElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Fetch voices from API
   const {
@@ -94,14 +102,17 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
       selectedLanguage.value === "All Languages"
         ? undefined
         : selectedLanguage.value,
+    searchQuery: searchQuery,
   });
 
-  // Intersection observer for infinite scrolling
+  // Improved intersection observer setup
   const lastVoiceCallback = useCallback(
     (node: HTMLDivElement | null) => {
       if (!node) return;
 
-      // Clean up previous observer
+      console.log("Setting up intersection observer on node");
+
+      // Always disconnect previous observer before creating a new one
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
@@ -109,7 +120,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
       // Create a new intersection observer
       const observer = new IntersectionObserver(
         (entries) => {
-          // Load more data when the last element is visible
+          // If the last element is intersecting and we have more data to load
           if (
             entries[0].isIntersecting &&
             hasMore &&
@@ -117,17 +128,20 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
             !isFetching &&
             currentPage > 0
           ) {
-            // Set loading state and load next page with a small delay
+            console.log("Last item intersected, loading more data");
+            // Set loading state
             setIsPaginationLoading(true);
+
+            // Load next page with a short delay
             setTimeout(() => {
               setCurrentPage((prev) => prev + 1);
             }, 500);
           }
         },
         {
-          root: scrollContainerRef.current,
-          threshold: 0.5,
-          rootMargin: "0px",
+          root: scrollContainerRef.current, // Only trigger when visible in the scroll container
+          threshold: 0.5, // Element must be 50% visible to trigger
+          rootMargin: "0px", // No extra margin
         }
       );
 
@@ -147,6 +161,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
 
   // Reset state when language or search query changes
   useEffect(() => {
+    console.log("Language or search changed, resetting state");
     setCurrentPage(1);
     setAllVoices([]);
     setHasMore(true);
@@ -158,18 +173,31 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
     }
   }, [selectedLanguage, searchQuery]);
 
-  // Handle voice data updates
+  // Log search events
+  useEffect(() => {
+    if (searchQuery) {
+      console.log(`Searching for: "${searchQuery}"`);
+    }
+  }, [searchQuery]);
+
+  // Simplified data handling
   useEffect(() => {
     if (!voicesData) return;
 
     // Reset loading state when new data arrives
     setIsPaginationLoading(false);
 
+    console.log("Received voice data for page:", voicesData.pagination.page);
+    console.log("Total pages:", voicesData.pagination.pages);
+    console.log("Got", voicesData.voices.length, "voices");
+
     if (currentPage === 1) {
       // On first page, replace all voices
+      console.log("Setting initial voices data");
       setAllVoices(voicesData.voices);
     } else {
-      // On subsequent pages, append new voices without duplicates
+      // On subsequent pages, append new voices
+      console.log("Appending new voices");
       setAllVoices((prev) => {
         // Create a Set of existing IDs for faster lookup
         const existingIds = new Set(prev.map((voice) => voice.id));
@@ -178,15 +206,18 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
         const newVoices = voicesData.voices.filter(
           (voice) => !existingIds.has(voice.id)
         );
+        console.log("Adding", newVoices.length, "new voices");
 
         // Return combined array
         return [...prev, ...newVoices];
       });
     }
 
-    // Update hasMore flag based on pagination info
+    // Update hasMore flag
     const { pagination } = voicesData;
-    setHasMore(pagination.page < pagination.pages);
+    const moreAvailable = pagination.page < pagination.pages;
+    console.log("Has more pages:", moreAvailable);
+    setHasMore(moreAvailable);
   }, [voicesData, currentPage]);
 
   // Use accumulated voices instead of just current page
@@ -196,27 +227,40 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
     onVoiceSelect?.(voice);
   };
 
-  // Render voice list or appropriate loading/empty states
   const renderVoiceContent = () => {
-    // Show loading skeleton during initial load
+    // Only show skeleton during initial load (page 1) or when search is being typed
     if ((loading && currentPage === 1) || isSearching) {
       return <VoiceSkeleton />;
     }
-
-    // Show empty state when no results
+    // Show no results state
     if (voices.length === 0 && !loading && !isSearching) {
       return (
-        <NoVoicesMessage
-          searchQuery={searchQuery}
-          selectedLanguage={selectedLanguage}
-        />
+        <div className="col-span-4 flex flex-col items-center justify-center py-8 text-center">
+          <div className="mb-2 text-sm text-neutral-sub-text">
+            No voices found
+          </div>
+          {searchQuery ? (
+            <div className="text-xs text-neutral-sub-text">
+              No voices found matching &quot;{searchQuery}&quot;.
+              <br />
+              Try a different search term or clear the filter.
+            </div>
+          ) : selectedLanguage.value !== "All Languages" ? (
+            <div className="text-xs text-neutral-sub-text">
+              No voices available for the selected language.
+            </div>
+          ) : (
+            <div className="text-xs text-neutral-sub-text">
+              No voices available at the moment.
+            </div>
+          )}
+        </div>
       );
     }
 
-    // Show voice list with pagination
+    // Show voices
     return (
       <>
-        {/* Voice list */}
         {voices.map((voice, index) => {
           const isLast = index === voices.length - 1;
           return (
@@ -233,100 +277,32 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
           );
         })}
 
-        {/* Pagination loading indicator */}
+        {/* Pagination loading - positioned directly under the fetched data */}
         {isPaginationLoading && <VoiceSkeleton />}
       </>
     );
   };
 
-  // Component for empty state messages
-  const NoVoicesMessage = ({
-    searchQuery,
-    selectedLanguage,
-  }: {
-    searchQuery: string;
-    selectedLanguage: { value: string; label: string; flag: string };
-  }) => (
-    <div className="col-span-4 flex flex-col items-center justify-center py-8 text-center">
-      <div className="mb-2 text-sm text-neutral-sub-text">No voices found</div>
-      {searchQuery ? (
-        <div className="text-xs text-neutral-sub-text">
-          No voices match &quot;{searchQuery}&quot;. Try a different search term
-          or clear the filter.
-        </div>
-      ) : selectedLanguage.value !== "All Languages" ? (
-        <div className="text-xs text-neutral-sub-text">
-          No voices available for the selected language.
-        </div>
-      ) : (
-        <div className="text-xs text-neutral-sub-text">
-          No voices available at the moment.
-        </div>
-      )}
-    </div>
-  );
-
-  // Selected voice display component
-  const SelectedVoiceDisplay = ({ voice }: { voice?: Voice | null }) => (
-    <div className="flex items-center gap-[10px]">
-      {voice ? (
-        <>
-          <VoiceAvatar
-            name={voice?.name || "Default Voice"}
-            isSelected={true}
-            hideName
-            size={40}
-            className="flex-row gap-2"
-          />
-          <span className="text-body-base font-semibold text-neutral-light">
-            {voice?.name || "Default Voice"}
-          </span>
-        </>
-      ) : (
-        <>
-          <div>
-            <Image
-              loading="lazy"
-              src="https://musicgpt.s3.us-east-1.amazonaws.com/system_images/musicgpt-logo-on-dark-small-2.png"
-              alt="Default Voice"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-          </div>
-          <span className="text-body-base font-semibold text-neutral-light">
-            Default Voice
-          </span>
-        </>
-      )}
-    </div>
-  );
-
-  // Voice search input component
-  const SearchInput = () => (
-    <div className="relative flex w-[222px]">
-      {isSearching ? (
-        <div className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-sub-text border-t-neutral-light"></div>
-        </div>
-      ) : (
-        <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-sub-text" />
-      )}
-      <input
-        type="text"
-        placeholder="Search voices"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="block w-full text-[13px] rounded-full bg-neutral-hover pl-12 py-2 pr-10 text-pure-white transition-all duration-200 placeholder:text-neutral-sub-text"
-      />
-    </div>
-  );
-
   return (
     <div className="flex h-full w-full flex-col justify-between gap-6 p-5 pb-0 sm:flex-row">
       <div className="hidden min-w-0 flex-col gap-6 sm:flex">
         <div className="flex gap-3">
-          <SearchInput />
+          <div className="relative flex w-[222px]">
+            {isSearching ? (
+              <div className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-sub-text border-t-neutral-light"></div>
+              </div>
+            ) : (
+              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-sub-text" />
+            )}
+            <input
+              type="text"
+              placeholder="Search voices"
+              value={searchInputValue}
+              onChange={(e) => setSearchInputValue(e.target.value)}
+              className="block w-full text-[13px] rounded-full bg-neutral-hover pl-12 py-2 pr-10 text-pure-white transition-all duration-200 placeholder:text-neutral-sub-text"
+            />
+          </div>
           <LanguageDropdown
             selectedLanguage={selectedLanguage}
             onLanguageChange={setSelectedLanguage}
@@ -344,7 +320,38 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
       </div>
 
       <div className="flex w-full flex-col gap-1 sm:w-1/3">
-        <SelectedVoiceDisplay voice={selectedVoice} />
+        <div className="flex items-center gap-[10px]">
+          {selectedVoice ? (
+            <>
+              <VoiceAvatar
+                name={selectedVoice?.name || "Default Voice"}
+                isSelected={true}
+                hideName
+                size={40}
+                className="flex-row gap-2"
+              />
+              <span className="text-body-base font-semibold text-neutral-light">
+                {selectedVoice?.name || "Default Voice"}
+              </span>
+            </>
+          ) : (
+            <>
+              <div>
+                <Image
+                  loading="lazy"
+                  src="https://musicgpt.s3.us-east-1.amazonaws.com/system_images/musicgpt-logo-on-dark-small-2.png"
+                  alt="Default Voice"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+              </div>
+              <span className="text-body-base font-semibold text-neutral-light">
+                Default Voice
+              </span>
+            </>
+          )}
+        </div>
 
         <div className="flex-1">
           <Textarea
