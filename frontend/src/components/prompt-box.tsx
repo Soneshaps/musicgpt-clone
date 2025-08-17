@@ -8,6 +8,7 @@ import CreateAnythingActions from "./tools/action/create-anything-actions";
 import { ToolsDropdown } from "./common/dropdown/tools-dropdown";
 import { useCreateAnythingTool } from "@/hooks/useCreateAnythingTool";
 import { useTextToSpeechTool } from "@/hooks/useTextToSpeechTool";
+import { AutoHeightMotion } from "./common/AutoHeightMotion";
 
 const PromptBox = ({
   selectedTool,
@@ -17,7 +18,6 @@ const PromptBox = ({
   setSelectedTool: (tool: ToolType) => void;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-
   const {
     activeMode,
     setActiveMode,
@@ -64,18 +64,8 @@ const PromptBox = ({
   return (
     <div className="relative z-10 w-full rounded-[27px] bg-[#272A2E] shadow-lg backdrop-blur-sm transition duration-200">
       <form onSubmit={() => {}} className="overflow-hidden pb-4">
-        <div className="">
-          <div
-            className={twclsx(
-              "transition-all duration-500 ease-in-out px-5 pt-5",
-              {
-                "translate-x-0 opacity-100":
-                  selectedTool === ToolType.TEXT_TO_SPEECH,
-                "pointer-events-none absolute inset-0 -translate-x-full opacity-0":
-                  selectedTool !== ToolType.TEXT_TO_SPEECH,
-              }
-            )}
-          >
+        <AutoHeightMotion dependency={[selectedTool, activeMode]}>
+          <div className={"transition-all duration-500 ease-in-out px-5 pt-5"}>
             {selectedTool === ToolType.TEXT_TO_SPEECH && (
               <TextToSpeechTool
                 prompt={textToSpeechPrompt}
@@ -87,14 +77,7 @@ const PromptBox = ({
             )}
           </div>
 
-          <div
-            className={twclsx("transition-all duration-500 ease-in-out", {
-              "translate-x-0 opacity-100":
-                selectedTool == ToolType.CREATE_ANYTHING,
-              "pointer-events-none absolute inset-0 translate-x-full opacity-0":
-                selectedTool !== ToolType.CREATE_ANYTHING,
-            })}
-          >
+          <div className={"transition-all duration-500 ease-in-out"}>
             {selectedTool === ToolType.CREATE_ANYTHING && (
               <CreateAnythingTool
                 prompt={createAnythingPrompt}
@@ -106,39 +89,38 @@ const PromptBox = ({
               />
             )}
           </div>
-
-          <div className="px-5">
-            {selectedTool === ToolType.CREATE_ANYTHING && (
-              <CreateAnythingActions
-                activeMode={activeMode}
-                handleFileButtonClick={() => {
-                  console.log("File button clicked");
-                }}
-                onFileChange={() => {
-                  console.log("File changed");
-                }}
-                handleModeToggle={setActiveMode}
+        </AutoHeightMotion>
+        <div className="px-5">
+          {selectedTool === ToolType.CREATE_ANYTHING && (
+            <CreateAnythingActions
+              activeMode={activeMode}
+              handleFileButtonClick={() => {
+                console.log("File button clicked");
+              }}
+              onFileChange={() => {
+                console.log("File changed");
+              }}
+              handleModeToggle={setActiveMode}
+            />
+          )}
+          <div className="absolute bottom-3 right-3">
+            <div className="flex gap-3">
+              <ToolsDropdown
+                onToolChange={setSelectedTool}
+                selectedTool={selectedTool}
               />
-            )}
-            <div className="absolute bottom-3 right-3">
-              <div className="flex gap-3">
-                <ToolsDropdown
-                  onToolChange={setSelectedTool}
-                  selectedTool={selectedTool}
-                />
 
-                <FormActions
-                  isButtonEnabled={
-                    selectedTool === ToolType.TEXT_TO_SPEECH
-                      ? Boolean(textToSpeechPrompt.trim())
-                      : selectedTool === ToolType.CREATE_ANYTHING
-                      ? Boolean(createAnythingPrompt.trim())
-                      : false
-                  }
-                  isLoading={isLoading}
-                  onSubmit={handleSubmit}
-                />
-              </div>
+              <FormActions
+                isButtonEnabled={
+                  selectedTool === ToolType.TEXT_TO_SPEECH
+                    ? Boolean(textToSpeechPrompt.trim())
+                    : selectedTool === ToolType.CREATE_ANYTHING
+                    ? Boolean(createAnythingPrompt.trim())
+                    : false
+                }
+                isLoading={isLoading}
+                onSubmit={handleSubmit}
+              />
             </div>
           </div>
         </div>

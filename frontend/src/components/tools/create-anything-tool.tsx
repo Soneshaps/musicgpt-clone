@@ -89,56 +89,27 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
       {activeMode === CreateAnythingMode.LYRICS && (
         <>
           <div className="border-t border-neutral-sub-text"></div>
-          <AnimatePresence mode="wait">
-            <motion.div
-              initial={{
-                opacity: 0,
-                height: 0,
-                y: -10,
-              }}
-              animate={{
-                opacity: 1,
-                height: "auto",
-                y: 0,
-              }}
-              exit={{
-                opacity: 0,
-                height: 0,
-                y: -10,
-              }}
-              transition={{
-                duration: 0.4,
-                ease: [0.4, 0, 0.2, 1],
-                height: {
-                  duration: 0.3,
-                },
-              }}
-              className="overflow-hidden"
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{
-                  duration: 0.3,
-                  delay: 0.1,
-                  ease: [0.4, 0, 0.2, 1],
-                }}
-              >
-                <Textarea
-                  name="lyrics"
-                  id="lyrics"
-                  placeholder="Add your lyrics"
-                  value={lyrics}
-                  onChange={onLyricsChange}
-                  autoResize={true}
-                  minHeight={64}
-                  maxHeight={120}
-                  className="p-5"
-                />
-              </motion.div>
-            </motion.div>
-          </AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{
+              duration: 0.3,
+              ease: [0.4, 0, 0.2, 1],
+            }}
+          >
+            <Textarea
+              name="lyrics"
+              id="lyrics"
+              placeholder="Add your lyrics"
+              value={lyrics}
+              onChange={onLyricsChange}
+              autoResize={true}
+              minHeight={64}
+              maxHeight={120}
+              className="p-5"
+            />
+          </motion.div>
         </>
       )}
     </div>
