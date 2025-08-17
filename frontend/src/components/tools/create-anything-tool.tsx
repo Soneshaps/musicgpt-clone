@@ -82,7 +82,7 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
           autoResize={true}
           minHeight={64}
           maxHeight={120}
-          className="p-5"
+          className="p-5 pretty-scrollbar-2"
         />
       </div>
 
@@ -107,7 +107,7 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
               autoResize={true}
               minHeight={64}
               maxHeight={120}
-              className="p-5"
+              className="p-5 pretty-scrollbar-2"
             />
           </motion.div>
         </>

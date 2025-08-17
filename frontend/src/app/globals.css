@@ -62,6 +62,18 @@
   .hide-scrollbar::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
+
+  /* Custom scrollbar styles */
+  .pretty-scrollbar-2::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .pretty-scrollbar-2::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    border-radius: 3px;
+    background-color: #3a3e42;
+  }
 }
 
 @layer components {

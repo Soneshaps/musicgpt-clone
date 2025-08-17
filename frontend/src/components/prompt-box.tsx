@@ -62,10 +62,10 @@ const PromptBox = ({
   };
 
   return (
-    <div className="relative z-10 w-full rounded-[27px] bg-[#272A2E] shadow-lg backdrop-blur-sm transition duration-200">
-      <form onSubmit={() => {}} className="overflow-hidden pb-4">
+    <div className="relative z-10 w-full rounded-[27px] bg-[#272A2E] shadow-lg backdrop-blur-sm transition duration-200 pb-[50px]">
+      <form onSubmit={() => {}}>
         <AutoHeightMotion dependency={[selectedTool, activeMode]}>
-          <div className={"transition-all duration-500 ease-in-out px-5 pt-5"}>
+          <div className={"transition-all duration-500 ease-in-out px-5"}>
             {selectedTool === ToolType.TEXT_TO_SPEECH && (
               <TextToSpeechTool
                 prompt={textToSpeechPrompt}
@@ -92,17 +92,20 @@ const PromptBox = ({
         </AutoHeightMotion>
         <div className="px-5">
           {selectedTool === ToolType.CREATE_ANYTHING && (
-            <CreateAnythingActions
-              activeMode={activeMode}
-              handleFileButtonClick={() => {
-                console.log("File button clicked");
-              }}
-              onFileChange={() => {
-                console.log("File changed");
-              }}
-              handleModeToggle={setActiveMode}
-            />
+            <div className="absolute bottom-3 left-3">
+              <CreateAnythingActions
+                activeMode={activeMode}
+                handleFileButtonClick={() => {
+                  console.log("File button clicked");
+                }}
+                onFileChange={() => {
+                  console.log("File changed");
+                }}
+                handleModeToggle={setActiveMode}
+              />
+            </div>
           )}
+
           <div className="absolute bottom-3 right-3">
             <div className="flex gap-3">
               <ToolsDropdown
