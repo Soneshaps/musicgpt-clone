@@ -4,11 +4,7 @@ import { ChangeEvent, FC, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useCreateSpeechRequest } from "@/hooks/useSpeechRequestApi";
 import { showToast, toastMessages } from "@/utils/toast-utils";
-
-export enum CreateAnythingMode {
-  INSTRUMENTAL = "instrumental",
-  LYRICS = "lyrics",
-}
+import { CreateAnythingMode } from "@/enums";
 
 interface CreateAnythingToolProps {
   prompt: string;
@@ -60,7 +56,7 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
       if (loadingToast) {
         showToast.dismiss(loadingToast);
       }
-      showToast.error(toastMessages.createAnything.error);
+      showToast.error(toastMessages.createAnything.error || error);
     }
   };
 

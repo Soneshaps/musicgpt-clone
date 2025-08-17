@@ -1,4 +1,4 @@
-import { Voice } from "@/components/tools/text-to-speech-tool";
+import { Voice } from "@/types/api";
 import { ChangeEvent, useState } from "react";
 
 export const useTextToSpeechTool = () => {

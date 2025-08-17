@@ -1,7 +1,7 @@
 import { CreateAnythingTool } from "./tools/create-anything-tool";
 import { FormActions } from "./tools/form-actions";
 import { TextToSpeechTool } from "./tools/text-to-speech-tool";
-import { ToolType } from "./music-gpt-interface";
+import { ToolType } from "@/enums";
 import { useState, useCallback } from "react";
 import CreateAnythingActions from "./tools/action/create-anything-actions";
 import { ToolsDropdown } from "./common/dropdown/tools-dropdown";

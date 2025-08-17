@@ -4,16 +4,8 @@ import { FC, useState } from "react";
 import PromptTitle from "./prompt-title";
 import Description from "./description";
 import PromptBox from "./prompt-box";
-
-export enum ToolType {
-  CREATE_ANYTHING = "Create anything",
-  TEXT_TO_SPEECH = "Text to Speech",
-}
-
-const toolTypeToTitleMap = {
-  [ToolType.CREATE_ANYTHING]: "What song to create?",
-  [ToolType.TEXT_TO_SPEECH]: "Text to speech",
-};
+import { ToolType } from "@/enums";
+import { toolTypeToTitleMap } from "@/constants";
 
 const MusicGptInterface: FC = () => {
   const [selectedTool, setSelectedTool] = useState<ToolType>(

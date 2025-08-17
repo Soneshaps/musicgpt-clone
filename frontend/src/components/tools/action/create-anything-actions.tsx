@@ -3,8 +3,8 @@ import { Paperclip, AudioLines, Plus } from "lucide-react";
 import { twclsx } from "@/utils/twclsx";
 import { ChangeEvent, useRef } from "react";
 import { ButtonVariants } from "@/components/common/button";
-import { CreateAnythingMode } from "../create-anything-tool";
 import { showToast } from "@/utils/toast-utils";
+import { CreateAnythingMode } from "@/enums";
 
 interface CreateAnythingActionsProps {
   activeMode: CreateAnythingMode | null;

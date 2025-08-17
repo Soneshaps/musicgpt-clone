@@ -17,13 +17,8 @@ import Image from "next/image";
 import { useVoices } from "@/hooks/useVoicesApi";
 import { useCreateSpeechRequest } from "@/hooks/useSpeechRequestApi";
 import { showToast, toastMessages } from "@/utils/toast-utils";
-
-// Local interface that matches component expectations
-export interface Voice {
-  id?: string;
-  name: string;
-  language: string;
-}
+import { languages } from "@/constants";
+import { Voice } from "@/types/api";
 
 interface TextToSpeechToolProps {
   prompt: string;
@@ -32,29 +27,6 @@ interface TextToSpeechToolProps {
   onVoiceSelect?: (voice: Voice | null) => void;
   onSubmitReady?: (submitFn: () => Promise<void>) => void;
 }
-
-export const languages = [
-  {
-    value: "All Languages",
-    label: "All Languages",
-    flag: "",
-  },
-  {
-    value: "English",
-    label: "English",
-    flag: "🇺🇸",
-  },
-  {
-    value: "Indian",
-    label: "Indian",
-    flag: "🇮🇳",
-  },
-  {
-    value: "Nepali",
-    label: "Nepali",
-    flag: "🇳🇵",
-  },
-];
 
 // Mock data removed - now using API
 
@@ -78,16 +50,14 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
     flag: string;
   }>(languages[0]);
 
-  // Create speech request mutation
   const { mutateAsync: createSpeechRequest } = useCreateSpeechRequest();
 
-  // Search input handler with debounce
   useEffect(() => {
     setIsSearching(true);
     const timer = setTimeout(() => {
       setSearchQuery(searchInputValue);
       setIsSearching(false);
-    }, 500); // 500ms debounce delay
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [searchInputValue]);
@@ -96,14 +66,13 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Fetch voices from API
   const {
     data: voicesData,
     isLoading: loading,
     isFetching,
   } = useVoices({
     page: currentPage,
-    limit: 12, // Changed from 15 to 12
+    limit: 12,
     language:
       selectedLanguage.value === "All Languages"
         ? undefined
@@ -259,7 +228,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
       if (loadingToast) {
         showToast.dismiss(loadingToast);
       }
-      showToast.error(toastMessages.textToSpeech.error);
+      showToast.error(toastMessages.textToSpeech.error || error);
     }
   };
 

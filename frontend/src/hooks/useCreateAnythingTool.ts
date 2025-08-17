@@ -1,4 +1,4 @@
-import { CreateAnythingMode } from "@/components/tools/create-anything-tool";
+import { CreateAnythingMode } from "@/enums";
 import { ChangeEvent, useCallback, useState } from "react";
 import { showToast } from "@/utils/toast-utils";
 

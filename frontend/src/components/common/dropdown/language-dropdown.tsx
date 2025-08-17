@@ -3,7 +3,7 @@
 import { twclsx } from "@/utils/twclsx";
 import Dropdown from "./dropdown";
 import { FC } from "react";
-import { languages } from "@/components/tools/text-to-speech-tool";
+import { languages } from "@/constants";
 
 interface LanguageDropdownProps {
   selectedLanguage: {

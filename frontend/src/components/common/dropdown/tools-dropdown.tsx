@@ -5,7 +5,7 @@ import { Check, ChevronDown } from "lucide-react";
 import { Dropdown } from "@/components/common/dropdown";
 import Badge from "@/components/common/badge";
 import Image from "next/image";
-import { ToolType } from "@/components/music-gpt-interface";
+import { ToolType } from "@/enums";
 
 interface ToolOption {
   id: string;
