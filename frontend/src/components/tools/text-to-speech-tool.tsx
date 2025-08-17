@@ -28,8 +28,6 @@ interface TextToSpeechToolProps {
   onSubmitReady?: (submitFn: () => Promise<void>) => void;
 }
 
-// Mock data removed - now using API
-
 export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   prompt,
   onPromptChange,
@@ -80,22 +78,16 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
     searchQuery: searchQuery,
   });
 
-  // Improved intersection observer setup
   const lastVoiceCallback = useCallback(
     (node: HTMLDivElement | null) => {
       if (!node) return;
 
-      console.log("Setting up intersection observer on node");
-
-      // Always disconnect previous observer before creating a new one
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
 
-      // Create a new intersection observer
       const observer = new IntersectionObserver(
         (entries) => {
-          // If the last element is intersecting and we have more data to load
           if (
             entries[0].isIntersecting &&
             hasMore &&
@@ -103,30 +95,23 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
             !isFetching &&
             currentPage > 0
           ) {
-            console.log("Last item intersected, loading more data");
-            // Set loading state
             setIsPaginationLoading(true);
 
-            // Load next page with a short delay
             setTimeout(() => {
               setCurrentPage((prev) => prev + 1);
             }, 500);
           }
         },
         {
-          root: scrollContainerRef.current, // Only trigger when visible in the scroll container
-          threshold: 0.5, // Element must be 50% visible to trigger
-          rootMargin: "0px", // No extra margin
+          root: scrollContainerRef.current,
+          threshold: 0.5,
+          rootMargin: "0px",
         }
       );
 
-      // Start observing this node
       observer.observe(node);
-
-      // Save the observer
       observerRef.current = observer;
 
-      // Clean up the observer when the component unmounts
       return () => {
         observer.disconnect();
       };
@@ -134,77 +119,46 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
     [hasMore, loading, isFetching, currentPage, scrollContainerRef]
   );
 
-  // Reset state when language or search query changes
   useEffect(() => {
-    console.log("Language or search changed, resetting state");
     setCurrentPage(1);
     setAllVoices([]);
     setHasMore(true);
 
-    // Clean up any existing observer
     if (observerRef.current) {
       observerRef.current.disconnect();
       observerRef.current = null;
     }
   }, [selectedLanguage, searchQuery]);
 
-  // Log search events
-  useEffect(() => {
-    if (searchQuery) {
-      console.log(`Searching for: "${searchQuery}"`);
-    }
-  }, [searchQuery]);
-
-  // Simplified data handling
   useEffect(() => {
     if (!voicesData) return;
 
-    // Reset loading state when new data arrives
     setIsPaginationLoading(false);
 
-    console.log("Received voice data for page:", voicesData.pagination.page);
-    console.log("Total pages:", voicesData.pagination.pages);
-    console.log("Got", voicesData.voices.length, "voices");
-
     if (currentPage === 1) {
-      // On first page, replace all voices
-      console.log("Setting initial voices data");
       setAllVoices(voicesData.voices);
     } else {
-      // On subsequent pages, append new voices
-      console.log("Appending new voices");
       setAllVoices((prev) => {
-        // Create a Set of existing IDs for faster lookup
         const existingIds = new Set(prev.map((voice) => voice.id));
-
-        // Filter out duplicates
         const newVoices = voicesData.voices.filter(
           (voice) => !existingIds.has(voice.id)
         );
-        console.log("Adding", newVoices.length, "new voices");
-
-        // Return combined array
         return [...prev, ...newVoices];
       });
     }
 
-    // Update hasMore flag
     const { pagination } = voicesData;
     const moreAvailable = pagination.page < pagination.pages;
-    console.log("Has more pages:", moreAvailable);
     setHasMore(moreAvailable);
   }, [voicesData, currentPage]);
 
-  // Use accumulated voices instead of just current page
   const voices = allVoices;
 
   const handleVoiceClick = (voice: Voice) => {
     onVoiceSelect?.(voice);
   };
 
-  // Handle speech request submission
   const handleSubmit = async () => {
-    // Validate input
     if (!prompt.trim()) {
       showToast.error(toastMessages.validation.promptRequired);
       return;
@@ -214,7 +168,6 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
     try {
       loadingToast = showToast.loading(toastMessages.textToSpeech.loading);
 
-      // Create the speech request
       await createSpeechRequest({
         prompt: prompt,
         type: "text-to-speech",
@@ -224,7 +177,6 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
       showToast.dismiss(loadingToast);
       showToast.success(toastMessages.textToSpeech.success);
     } catch (error) {
-      // Always dismiss the loading toast on error
       if (loadingToast) {
         showToast.dismiss(loadingToast);
       }
@@ -232,20 +184,17 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
     }
   };
 
-  // Expose handleSubmit to parent component
   useEffect(() => {
     if (onSubmitReady) {
       onSubmitReady(handleSubmit);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onSubmitReady, prompt, selectedVoice]);
 
   const renderVoiceContent = () => {
-    // Only show skeleton during initial load (page 1) or when search is being typed
     if ((loading && currentPage === 1) || isSearching) {
       return <VoiceSkeleton />;
     }
-    // Show no results state
+
     if (voices.length === 0 && !loading && !isSearching) {
       return (
         <div className="col-span-4 flex flex-col items-center justify-center py-8 text-center">
@@ -271,7 +220,6 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
       );
     }
 
-    // Show voices
     return (
       <>
         {voices.map((voice, index) => {
@@ -284,13 +232,12 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
               <VoiceAvatar
                 name={voice?.name}
                 isSelected={selectedVoice?.name === voice?.name}
-                onClick={() => handleVoiceClick(voice)}
+                onClick={() => onVoiceSelect?.(voice)}
               />
             </div>
           );
         })}
 
-        {/* Pagination loading - positioned directly under the fetched data */}
         {isPaginationLoading && <VoiceSkeleton />}
       </>
     );
@@ -316,7 +263,6 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
           />
         </div>
 
-        {/* Using CSS mask for fade effect */}
         <div
           ref={scrollContainerRef}
           className="grid max-h-48 min-h-48 grid-cols-3 md:grid-cols-4 gap-y-[15px] gap-x-[10px] overflow-y-auto pt-[10px] pb-[20px] transition-all duration-200 ease-in-out scroll-fade-mask relative hide-scrollbar"
