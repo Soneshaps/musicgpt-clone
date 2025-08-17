@@ -53,33 +53,9 @@ export const get = <T>(url: string, config?: AxiosRequestConfig) => {
 // Function to create request for POST
 export const post = <T>(
   url: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any,
   config?: AxiosRequestConfig
 ) => {
   return axiosClient.post<T>(url, data, config);
 };
-
-// Function to create request for PUT
-export const put = <T>(
-  url: string,
-  data?: any,
-  config?: AxiosRequestConfig
-) => {
-  return axiosClient.put<T>(url, data, config);
-};
-
-// Function to create request for DELETE
-export const del = <T>(url: string, config?: AxiosRequestConfig) => {
-  return axiosClient.delete<T>(url, config);
-};
-
-// Function to create request for PATCH
-export const patch = <T>(
-  url: string,
-  data?: any,
-  config?: AxiosRequestConfig
-) => {
-  return axiosClient.patch<T>(url, data, config);
-};
-
-export default axiosClient;

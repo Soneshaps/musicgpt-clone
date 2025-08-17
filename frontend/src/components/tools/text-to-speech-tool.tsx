@@ -93,14 +93,13 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   }, [searchInputValue]);
 
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const lastVoiceRef = useRef<HTMLDivElement | null>(null);
+
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Fetch voices from API
   const {
     data: voicesData,
     isLoading: loading,
-    error,
     isFetching,
   } = useVoices({
     page: currentPage,
@@ -266,6 +265,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
     if (onSubmitReady) {
       onSubmitReady(handleSubmit);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onSubmitReady, prompt, selectedVoice]);
 
   const renderVoiceContent = () => {

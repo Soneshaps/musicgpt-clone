@@ -1,8 +1,7 @@
 "use client";
 
 import { useGetQuery } from "@/utils/api-client";
-import { ApiResponse, VoicesResponse } from "@/types/api";
-import { AxiosError } from "axios";
+import { VoicesResponse } from "@/types/api";
 
 export interface UseVoicesParams {
   page?: number;

@@ -66,6 +66,7 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
     if (onSubmitReady) {
       onSubmitReady(handleSubmit);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onSubmitReady, prompt, lyrics, activeMode, selectedFile]);
 
   return (

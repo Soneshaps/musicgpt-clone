@@ -45,6 +45,7 @@ const Dropdown: FunctionComponent<DropdownProps> = ({
       ref={dropdownRef}
       tabIndex={0}
       onKeyDown={(e) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         e.key === "Enter" &&
           dropdownRef.current == document.activeElement &&
           toggleDropdown();

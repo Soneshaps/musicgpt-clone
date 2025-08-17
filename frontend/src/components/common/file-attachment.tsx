@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { X, FileAudio } from "lucide-react";
+import { X } from "lucide-react";
 import { twclsx } from "@/utils/twclsx";
 import Image from "next/image";
 

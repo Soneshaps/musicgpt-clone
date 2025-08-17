@@ -4,18 +4,19 @@ import { RefObject, useCallback, useEffect } from "react";
 
 const useOutsideClickEvent = (
   refElement: RefObject<HTMLElement>,
-  onOutsideClick: () => void,
+  onOutsideClick: () => void
 ) => {
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
       if (
         refElement.current &&
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         !refElement.current.contains(event?.target as any)
       ) {
         onOutsideClick();
       }
     },
-    [onOutsideClick, refElement],
+    [onOutsideClick, refElement]
   );
 
   useEffect(() => {

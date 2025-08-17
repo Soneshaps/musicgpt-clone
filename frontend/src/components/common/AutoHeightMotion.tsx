@@ -6,6 +6,7 @@ export const AutoHeightMotion = ({
   dependency,
 }: {
   children: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dependency: any;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
