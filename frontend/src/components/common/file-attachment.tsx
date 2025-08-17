@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { X, FileAudio } from "lucide-react";
 import { twclsx } from "@/utils/twclsx";
+import Image from "next/image";
 
 interface FileAttachmentProps {
   file: File;
@@ -16,18 +17,24 @@ export const FileAttachment: FC<FileAttachmentProps> = ({
   return (
     <div
       className={twclsx(
-        "flex items-center gap-3 rounded-lg border border-neutral-hover bg-neutral-hover/50 px-3 py-2 backdrop-blur-sm",
-        className,
+        "flex items-center gap-3 rounded-lg  bg-[#1d2125] px-3 py-2 backdrop-blur-sm",
+        className
       )}
     >
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-500/20">
-        <FileAudio className="h-4 w-4 text-blue-400" />
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full ">
+        <Image
+          src="/svg/icon-file-attachment.svg"
+          alt="Audio"
+          width={24}
+          height={24}
+        />
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-medium text-neutral-light">
+        <div className="truncate text-sm font-medium text-[#e4e6e8]">
           {file.name}
         </div>
+        <div className="truncate text-sm font-medium text-[#777a80]">Audio</div>
       </div>
 
       <button

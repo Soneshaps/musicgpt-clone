@@ -55,23 +55,6 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
 
   return (
     <div className="relative flex flex-col ">
-      <AnimatePresence mode="wait">
-        {selectedFile && onFileRemove && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            transition={{
-              duration: 0.3,
-              ease: [0.4, 0, 0.2, 1],
-            }}
-            className="mb-4 w-fit"
-          >
-            <FileAttachment file={selectedFile} onRemove={onFileRemove} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <div>
         <Textarea
           name="description"
@@ -111,6 +94,12 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
             />
           </motion.div>
         </>
+      )}
+
+      {selectedFile && onFileRemove && (
+        <div className="mb-4 w-fit pl-5">
+          <FileAttachment file={selectedFile} onRemove={onFileRemove} />
+        </div>
       )}
     </div>
   );

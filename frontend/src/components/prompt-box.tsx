@@ -3,7 +3,6 @@ import { FormActions } from "./tools/form-actions";
 import { TextToSpeechTool } from "./tools/text-to-speech-tool";
 import { ToolType } from "./music-gpt-interface";
 import { useState, useCallback } from "react";
-import { twclsx } from "@/utils/twclsx";
 import CreateAnythingActions from "./tools/action/create-anything-actions";
 import { ToolsDropdown } from "./common/dropdown/tools-dropdown";
 import { useCreateAnythingTool } from "@/hooks/useCreateAnythingTool";
@@ -27,6 +26,9 @@ const PromptBox = ({
     handleLyricsChange,
     createAnythingSubmit,
     handleCreateAnythingSubmitReady,
+    selectedFile,
+    handleFileChange,
+    handleFileRemove,
   } = useCreateAnythingTool();
 
   const {
@@ -83,8 +85,10 @@ const PromptBox = ({
                 prompt={createAnythingPrompt}
                 lyrics={lyrics}
                 activeMode={activeMode}
+                selectedFile={selectedFile}
                 onPromptChange={handlePromptChange}
                 onLyricsChange={handleLyricsChange}
+                onFileRemove={handleFileRemove}
                 onSubmitReady={handleCreateAnythingSubmitReady}
               />
             )}
@@ -95,13 +99,9 @@ const PromptBox = ({
             <div className="absolute bottom-3 left-3">
               <CreateAnythingActions
                 activeMode={activeMode}
-                handleFileButtonClick={() => {
-                  console.log("File button clicked");
-                }}
-                onFileChange={() => {
-                  console.log("File changed");
-                }}
+                onFileChange={handleFileChange}
                 handleModeToggle={setActiveMode}
+                selectedFile={selectedFile}
               />
             </div>
           )}

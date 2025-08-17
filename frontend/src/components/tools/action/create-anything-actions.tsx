@@ -7,18 +7,30 @@ import { CreateAnythingMode } from "../create-anything-tool";
 
 interface CreateAnythingActionsProps {
   activeMode: CreateAnythingMode | null;
-  handleFileButtonClick: () => void;
   onFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleModeToggle: (mode: CreateAnythingMode | null) => void;
+  selectedFile?: File | null;
 }
 
 const CreateAnythingActions = ({
   activeMode,
-  handleFileButtonClick,
   onFileChange,
   handleModeToggle,
+  selectedFile,
 }: CreateAnythingActionsProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileButtonClick = () => {
+    if (fileInputRef.current) {
+      // Clear the input value first to ensure change event fires even for same file
+      fileInputRef.current.value = "";
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onFileChange(e);
+  };
 
   const handleModeToggleClick = (mode: CreateAnythingMode) => {
     if (activeMode === mode) {
@@ -30,20 +42,33 @@ const CreateAnythingActions = ({
 
   return (
     <div className="flex gap-2">
-      <Button
-        variant={ButtonVariants.PRIMARY}
-        onClick={handleFileButtonClick}
-        type="button"
-      >
+      <div className="relative">
         <input
           ref={fileInputRef}
           type="file"
           accept="audio/*"
           className="hidden"
-          onChange={onFileChange}
+          onChange={handleFileInputChange}
         />
-        <Paperclip height={16} width={16} className="text-neutral-light" />
-      </Button>
+        <Button
+          variant={ButtonVariants.PRIMARY}
+          onClick={handleFileButtonClick}
+          type="button"
+          className={twclsx("relative transition-all duration-200", {
+            "border-green-500 bg-green-500/20": selectedFile,
+            "hover:border-green-500 hover:bg-green-500/20": selectedFile,
+          })}
+        >
+          <Paperclip
+            height={16}
+            width={16}
+            className={twclsx("transition-colors duration-200", {
+              "text-green-400": selectedFile,
+              "text-neutral-light": !selectedFile,
+            })}
+          />
+        </Button>
+      </div>
       <Button
         variant={ButtonVariants.PRIMARY}
         className={twclsx("transform transition-all duration-300 ease-in-out", {
