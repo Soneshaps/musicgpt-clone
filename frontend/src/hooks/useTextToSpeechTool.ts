@@ -16,6 +16,12 @@ export const useTextToSpeechTool = () => {
     setTextToSpeechPrompt(e.target.value);
   };
 
+  const resetState = () => {
+    setTextToSpeechPrompt("");
+    setTextToSpeechSubmit(null);
+    setSelectedVoice(null);
+  };
+
   return {
     textToSpeechPrompt,
     handleTextToSpeechPromptChange,
@@ -23,5 +29,6 @@ export const useTextToSpeechTool = () => {
     setTextToSpeechSubmit,
     selectedVoice,
     setSelectedVoice,
+    resetState,
   };
 };

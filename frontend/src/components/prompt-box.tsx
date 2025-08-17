@@ -30,6 +30,7 @@ const PromptBox = ({
     selectedFile,
     handleFileChange,
     handleFileRemove,
+    resetState: resetCreateAnythingState,
   } = useCreateAnythingTool();
 
   const {
@@ -39,6 +40,7 @@ const PromptBox = ({
     setTextToSpeechSubmit,
     selectedVoice,
     setSelectedVoice,
+    resetState: resetTextToSpeechState,
   } = useTextToSpeechTool();
 
   const handleTextToSpeechSubmitReady = useCallback(
@@ -53,9 +55,13 @@ const PromptBox = ({
     try {
       if (selectedTool === ToolType.TEXT_TO_SPEECH && textToSpeechSubmit) {
         await textToSpeechSubmit();
+        // Reset state after successful submission
+        resetTextToSpeechState();
       }
       if (selectedTool === ToolType.CREATE_ANYTHING && createAnythingSubmit) {
         await createAnythingSubmit();
+        // Reset state after successful submission
+        resetCreateAnythingState();
       }
     } catch (error) {
       console.error("Error submitting text to speech:", error);

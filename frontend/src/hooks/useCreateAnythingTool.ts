@@ -53,6 +53,21 @@ export const useCreateAnythingTool = () => {
     []
   );
 
+  const resetState = () => {
+    setActiveMode(null);
+    setSelectedFile(null);
+    setCreateAnythingPrompt("");
+    setLyrics("");
+    setCreateAnythingSubmit(null);
+    // Reset file input values
+    if (typeof window !== "undefined") {
+      const fileInputs = document.querySelectorAll('input[type="file"]');
+      fileInputs.forEach((input) => {
+        (input as HTMLInputElement).value = "";
+      });
+    }
+  };
+
   return {
     activeMode,
     setActiveMode,
@@ -65,5 +80,6 @@ export const useCreateAnythingTool = () => {
     selectedFile,
     handleFileChange,
     handleFileRemove,
+    resetState,
   };
 };
