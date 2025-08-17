@@ -42,7 +42,7 @@ export const VoiceAvatar: FC<VoiceAvatarProps> = ({
       <div
         style={{ width: size, height: size }}
         className={twclsx(
-          "flex h-11 w-11 items-center justify-center rounded-full border-2 border-transparent text-base font-medium transition-all duration-200 relative",
+          "flex h-[46px] w-[46px] items-center justify-center rounded-full border-2 border-transparent text-base font-medium transition-all duration-200 relative",
           {
             "border-[#ff6200] bg-neutral-light text-neutral-black ": isSelected,
             "bg-neutral-hover text-neutral-light hover:bg-neutral-light/20":
@@ -54,7 +54,7 @@ export const VoiceAvatar: FC<VoiceAvatarProps> = ({
         {lastname}
 
         {showPlayButton && isHovered && (
-          <div className="absolute -bottom-1 -right-2 flex items-center justify-center h-6 w-6 rounded-full drop-shadow-lg border-2 border-[#272A2E] bg-white">
+          <div className="absolute -bottom-1 -right-2 flex items-center justify-center h-6 w-6 rounded-full drop-shadow-lg border-2 border-neutral-base bg-white">
             <Image
               src="/svg/icon-control-play-gray.svg"
               alt="Play"

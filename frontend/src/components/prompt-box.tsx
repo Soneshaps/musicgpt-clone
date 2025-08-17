@@ -8,6 +8,7 @@ import { ToolsDropdown } from "./common/dropdown/tools-dropdown";
 import { useCreateAnythingTool } from "@/hooks/useCreateAnythingTool";
 import { useTextToSpeechTool } from "@/hooks/useTextToSpeechTool";
 import { AutoHeightMotion } from "./common/AutoHeightMotion";
+import { twclsx } from "@/utils/twclsx";
 
 const PromptBox = ({
   selectedTool,
@@ -64,10 +65,17 @@ const PromptBox = ({
   };
 
   return (
-    <div className="relative z-10 w-full rounded-[27px] bg-[#272A2E] shadow-lg backdrop-blur-sm transition duration-200 pb-[50px]">
+    <div
+      className={twclsx(
+        "relative z-10 w-full rounded-[27px] bg-[#272A2E] shadow-lg backdrop-blur-sm transition duration-200 ",
+        {
+          "pb-[50px]": selectedTool !== ToolType.TEXT_TO_SPEECH,
+        }
+      )}
+    >
       <form onSubmit={() => {}}>
         <AutoHeightMotion dependency={[selectedTool, activeMode]}>
-          <div className={"transition-all duration-500 ease-in-out px-5"}>
+          <div className={"transition-all duration-500 ease-in-out"}>
             {selectedTool === ToolType.TEXT_TO_SPEECH && (
               <TextToSpeechTool
                 prompt={textToSpeechPrompt}

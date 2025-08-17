@@ -114,10 +114,13 @@
   }
 
   .text-neutral-base {
-    color: #272a2e;
+    color: #27292e;
   }
   .bg-neutral-base {
-    background-color: #272a2e;
+    background-color: #27292e;
+  }
+  .border-neutral-base {
+    border-color: #27292e;
   }
   .bg-neutral-base\/50 {
     background-color: rgba(39, 42, 46, 0.5);
@@ -129,8 +132,13 @@
   .bg-neutral-hover {
     background-color: #3a3e42;
   }
+
   .hover\:bg-neutral-hover:hover {
     background-color: #3a3e42;
+  }
+
+  .border-neutral-hover {
+    border-color: #3a3e42;
   }
 
   .text-neutral-sub-text {

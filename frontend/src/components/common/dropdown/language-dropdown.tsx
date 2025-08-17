@@ -3,7 +3,6 @@
 import { twclsx } from "@/utils/twclsx";
 import Dropdown from "./dropdown";
 import { FC } from "react";
-import { label } from "framer-motion/client";
 import { languages } from "@/components/tools/text-to-speech-tool";
 
 interface LanguageDropdownProps {
@@ -41,7 +40,7 @@ export const LanguageDropdown: FC<LanguageDropdownProps> = ({
           </span>
         </div>
       }
-      className="duration-100 group relative flex w-[140px] shrink-0 grow-0 select-none items-center justify-center gap-1 rounded-full border border-neutral-sub-text py-2 text-sm text-pure-white transition-all duration-200 ease-in-out hover:cursor-pointer hover:border-neutral-light"
+      className="group relative flex w-[140px] h-[44px] shrink-0 grow-0 select-none items-center justify-center gap-1 rounded-full border border-neutral-hover py-2 text-sm text-pure-white transition-all duration-200 ease-in-out hover:cursor-pointer"
       align="center"
     >
       {languages.map((option) => (
@@ -53,8 +52,8 @@ export const LanguageDropdown: FC<LanguageDropdownProps> = ({
           )}
           onClick={() => handleLanguageSelect(option)}
         >
-          <span className="text-base">{option?.flag}</span>
-          <span className="text-sm font-medium text-pure-white">
+          {option?.flag && <span className="text-base">{option?.flag}</span>}
+          <span className="text-xs font-medium text-pure-white text-left">
             {option?.label}
           </span>
         </div>

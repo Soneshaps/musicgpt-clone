@@ -35,8 +35,8 @@ interface TextToSpeechToolProps {
 export const languages = [
   {
     value: "All Languages",
-    label: "All",
-    flag: "🌐",
+    label: "All Languages",
+    flag: "",
   },
   {
     value: "English",
@@ -336,22 +336,16 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
 
   return (
     <div className="flex h-full w-full flex-col justify-between gap-6 p-5 pb-0 sm:flex-row">
-      <div className="hidden min-w-0 flex-col gap-6 sm:flex">
+      <div className="hidden min-w-0 flex-col gap-4 sm:flex">
         <div className="flex gap-3">
           <div className="relative flex w-[222px]">
-            {isSearching ? (
-              <div className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-sub-text border-t-neutral-light"></div>
-              </div>
-            ) : (
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-sub-text" />
-            )}
+            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-sub-text" />
             <input
               type="text"
               placeholder="Search voices"
               value={searchInputValue}
               onChange={(e) => setSearchInputValue(e.target.value)}
-              className="block w-full text-[13px] rounded-full bg-neutral-hover pl-12 py-2 pr-10 text-pure-white transition-all duration-200 placeholder:text-neutral-sub-text"
+              className="block w-full text-[13px] rounded-full bg-[#1b2125] pl-11 pr-[10px] h-[44px] text-pure-white placeholder:text-neutral-sub-text border-1 border-neutral-hover"
             />
           </div>
           <LanguageDropdown
@@ -363,8 +357,8 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
         {/* Using CSS mask for fade effect */}
         <div
           ref={scrollContainerRef}
-          className="grid max-h-48 min-h-48 grid-cols-3 md:grid-cols-4 gap-4 overflow-y-auto pt-1 transition-all duration-200 ease-in-out scroll-fade-mask relative hide-scrollbar"
-          style={{ willChange: "transform" }} // Optimize rendering
+          className="grid max-h-48 min-h-48 grid-cols-3 md:grid-cols-4 gap-y-[15px] gap-x-[10px] overflow-y-auto pt-[10px] pb-[20px] transition-all duration-200 ease-in-out scroll-fade-mask relative hide-scrollbar"
+          style={{ willChange: "transform" }}
         >
           {renderVoiceContent()}
         </div>

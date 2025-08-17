@@ -70,7 +70,7 @@ const Dropdown: FunctionComponent<DropdownProps> = ({
 
       <div
         className={twclsx(
-          "absolute top-full z-50 transform overflow-hidden rounded-2xl border border-neutral-base bg-[rgba(29,33,37,1)] backdrop-blur-[50px] p-2.5 shadow-lg transition-all duration-300 ease-in-out max-sm:w-full",
+          "absolute z-50 transform overflow-hidden rounded-2xl border border-neutral-base bg-[#2f3337] backdrop-blur-[50px] p-2.5 shadow-lg transition-all duration-300 ease-in-out max-sm:w-full",
           {
             "right-1/2 w-full translate-x-1/2": align === "center",
             "left-0": align === "left",
