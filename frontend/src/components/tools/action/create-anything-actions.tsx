@@ -61,16 +61,15 @@ const CreateAnythingActions = ({
           variant={ButtonVariants.PRIMARY}
           onClick={handleFileButtonClick}
           type="button"
-          className={twclsx("relative transition-all duration-200", {
-            "border-green-500 bg-green-500/20": selectedFile,
-            "hover:border-green-500 hover:bg-green-500/20": selectedFile,
-          })}
+          className={twclsx(
+            "relative transition-all duration-200",
+            selectedFile && "border-white"
+          )}
         >
           <Paperclip
             height={16}
             width={16}
             className={twclsx("transition-colors duration-200", {
-              "text-green-400": selectedFile,
               "text-neutral-light": !selectedFile,
             })}
           />

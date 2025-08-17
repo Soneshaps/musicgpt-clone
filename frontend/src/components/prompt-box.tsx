@@ -67,7 +67,7 @@ const PromptBox = ({
   return (
     <div
       className={twclsx(
-        "relative z-10 w-full rounded-[27px] bg-[#272A2E] transition duration-200 ",
+        "relative z-10 w-full rounded-[27px] bg-[#272A2E] transition duration-200 opacity-90",
         {
           "pb-[50px]": selectedTool !== ToolType.TEXT_TO_SPEECH,
         }

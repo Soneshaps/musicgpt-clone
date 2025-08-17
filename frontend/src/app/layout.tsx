@@ -3,6 +3,7 @@ import { inter } from "@/fonts/google-fonts";
 import "./globals.css";
 import { ReactQueryProvider } from "@/utils/react-query-provider";
 import { ToastProvider } from "@/components/common/toast-provider";
+import { GradientBackground } from "@/components/gradient-background";
 
 export const metadata: Metadata = {
   title: "MusicGPT",
@@ -18,6 +19,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable}`}>
       <body className="font-sans antialiased">
         <ReactQueryProvider>
+          <GradientBackground />
           {children}
           <ToastProvider />
         </ReactQueryProvider>
