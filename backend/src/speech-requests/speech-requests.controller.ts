@@ -31,6 +31,8 @@ export class SpeechRequestsController {
    * - A text prompt for speech generation
    * - A type of speech request (text-to-speech, song, etc.)
    * - Optional lyrics for song generation
+   * - Optional song mode (lyrics or instrumental)
+   * - Optional file URL for uploaded audio files
    * - Optional voice ID to use for speech generation
    *
    * @param createSpeechRequestDto - The DTO containing speech request data

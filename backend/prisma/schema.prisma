@@ -26,6 +26,8 @@ model SpeechRequest {
   prompt        String
   type          String   // e.g., "text-to-speech", "song", etc.
   lyrics        String?  // Optional lyrics field
+  songMode      String?  // 'lyrics' | 'instrumental' | null
+  fileUrl       String?  // URL to the uploaded audio file
   status        String   @default("pending") // e.g., "pending", "processing", "completed", "failed"
   voiceId       String?  // Optional reference to Voice
   voice         Voice?   @relation(fields: [voiceId], references: [id])

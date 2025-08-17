@@ -8,6 +8,8 @@ export interface SpeechRequest {
   prompt: string;
   type: "text-to-speech" | "create-anything";
   lyrics?: string;
+  songMode?: "lyrics" | "instrumental";
+  fileUrl?: string;
   voiceId?: string;
 }
 
@@ -16,6 +18,8 @@ export interface SpeechRequestResponse {
   prompt: string;
   type: string;
   lyrics?: string;
+  songMode?: string;
+  fileUrl?: string;
   status: string;
   voiceId?: string;
   createdAt: string;

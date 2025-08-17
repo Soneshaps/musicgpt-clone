@@ -42,7 +42,9 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
     await createSpeechRequest({
       prompt: prompt,
       type: "create-anything",
-      lyrics: lyrics,
+      lyrics: activeMode === CreateAnythingMode.LYRICS ? lyrics : undefined,
+      songMode: activeMode || undefined,
+      fileUrl: selectedFile ? selectedFile.name : undefined,
     });
   };
 

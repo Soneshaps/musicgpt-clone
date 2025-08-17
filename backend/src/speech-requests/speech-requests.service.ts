@@ -31,6 +31,8 @@ export class SpeechRequestsService {
    * @param data.prompt - The text prompt for speech generation
    * @param data.type - The type of speech request (e.g., 'text-to-speech', 'song')
    * @param data.lyrics - Optional lyrics for song generation
+   * @param data.songMode - Optional song mode (lyrics or instrumental)
+   * @param data.fileUrl - Optional URL to uploaded audio file
    * @param data.voiceId - Optional voice ID to use for speech generation
    * @returns The created speech request with its voice relationship (if any)
    * @throws Error if the provided voice ID doesn't exist
@@ -39,6 +41,8 @@ export class SpeechRequestsService {
     prompt: string;
     type: string;
     lyrics?: string;
+    songMode?: string;
+    fileUrl?: string;
     voiceId?: string;
   }) {
     try {
@@ -61,6 +65,8 @@ export class SpeechRequestsService {
           prompt: data.prompt,
           type: data.type,
           lyrics: data.lyrics,
+          songMode: data.songMode,
+          fileUrl: data.fileUrl,
           voiceId: data.voiceId,
           status: 'pending',
         },
