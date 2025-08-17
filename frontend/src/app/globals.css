@@ -240,4 +240,17 @@
   .bg-orange-dark {
     background-color: #ff6100;
   }
+
+  .circle::after {
+    content: "";
+    position: absolute;
+    box-sizing: border-box;
+    border: 2px solid #ff6200;
+    border-radius: 50%;
+    width: calc(100% + 12px);
+    height: calc(100% + 12px);
+    left: -6px;
+    top: -6px;
+    z-index: -1;
+  }
 }

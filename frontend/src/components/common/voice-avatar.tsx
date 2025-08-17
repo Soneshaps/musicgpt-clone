@@ -44,7 +44,7 @@ export const VoiceAvatar: FC<VoiceAvatarProps> = ({
         className={twclsx(
           "flex h-[46px] w-[46px] items-center justify-center rounded-full border-2 border-transparent text-base font-medium transition-all duration-200 relative",
           {
-            "border-[#ff6200] bg-neutral-light text-neutral-black ": isSelected,
+            " bg-neutral-light text-neutral-black circle": isSelected,
             "bg-neutral-hover text-neutral-light hover:bg-neutral-light/20":
               !isSelected,
           }

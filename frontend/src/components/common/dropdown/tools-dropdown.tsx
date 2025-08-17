@@ -93,7 +93,7 @@ export const ToolsDropdown: FC<ToolsDropdownProps> = ({
         className="py-2 pl-3 pr-2"
         showDropdownIcon={false}
       >
-        <div className="min-w-[400px] max-sm:min-w-[300px]">
+        <div className="min-w-[300px] max-sm:min-w-[300px]">
           {tools?.map((tool) => (
             <div
               key={tool?.id}

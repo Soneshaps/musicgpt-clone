@@ -365,7 +365,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
       </div>
 
       <div className="flex w-full flex-col gap-1 sm:w-1/3">
-        <div className="flex items-center gap-[10px]">
+        <div className="flex items-center gap-4">
           {selectedVoice ? (
             <>
               <VoiceAvatar
@@ -408,7 +408,7 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
             autoResize={true}
             minHeight={80}
             maxHeight={150}
-            className="px-0"
+            className="px-0 pretty-scrollbar-2"
           />
 
           {/* Error message */}
