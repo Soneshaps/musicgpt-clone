@@ -241,10 +241,9 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
       return;
     }
 
+    let loadingToast: string | undefined;
     try {
-      const loadingToast = showToast.loading(
-        toastMessages.textToSpeech.loading
-      );
+      loadingToast = showToast.loading(toastMessages.textToSpeech.loading);
 
       // Create the speech request
       await createSpeechRequest({
@@ -255,7 +254,11 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
 
       showToast.dismiss(loadingToast);
       showToast.success(toastMessages.textToSpeech.success);
-    } catch {
+    } catch (error) {
+      // Always dismiss the loading toast on error
+      if (loadingToast) {
+        showToast.dismiss(loadingToast);
+      }
       showToast.error(toastMessages.textToSpeech.error);
     }
   };

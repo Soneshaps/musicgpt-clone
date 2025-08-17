@@ -41,10 +41,9 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
       return;
     }
 
+    let loadingToast: string | undefined;
     try {
-      const loadingToast = showToast.loading(
-        toastMessages.createAnything.loading
-      );
+      loadingToast = showToast.loading(toastMessages.createAnything.loading);
 
       await createSpeechRequest({
         prompt: prompt,
@@ -56,7 +55,11 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
 
       showToast.dismiss(loadingToast);
       showToast.success(toastMessages.createAnything.success);
-    } catch {
+    } catch (error) {
+      // Always dismiss the loading toast on error
+      if (loadingToast) {
+        showToast.dismiss(loadingToast);
+      }
       showToast.error(toastMessages.createAnything.error);
     }
   };
