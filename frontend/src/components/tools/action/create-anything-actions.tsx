@@ -4,6 +4,7 @@ import { twclsx } from "@/utils/twclsx";
 import { ChangeEvent, useRef } from "react";
 import { ButtonVariants } from "@/components/common/button";
 import { CreateAnythingMode } from "../create-anything-tool";
+import { showToast } from "@/utils/toast-utils";
 
 interface CreateAnythingActionsProps {
   activeMode: CreateAnythingMode | null;
@@ -35,8 +36,14 @@ const CreateAnythingActions = ({
   const handleModeToggleClick = (mode: CreateAnythingMode) => {
     if (activeMode === mode) {
       handleModeToggle(null);
+      showToast.success("Mode disabled");
     } else {
       handleModeToggle(mode);
+      showToast.success(
+        `${
+          mode === CreateAnythingMode.LYRICS ? "Lyrics" : "Instrumental"
+        } mode enabled`
+      );
     }
   };
 

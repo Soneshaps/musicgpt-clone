@@ -11,11 +11,12 @@ import {
 import { Textarea } from "../common/input/textarea";
 import { VoiceAvatar } from "@/components/common/voice-avatar";
 import { LanguageDropdown } from "@/components/common/dropdown/language-dropdown";
-import { Search, CheckCircle2, AlertCircle } from "lucide-react";
+import { Search } from "lucide-react";
 import VoiceSkeleton from "@/components/common/skeletons/voice-skeleton";
 import Image from "next/image";
 import { useVoices } from "@/hooks/useVoicesApi";
 import { useCreateSpeechRequest } from "@/hooks/useSpeechRequestApi";
+import { showToast, toastMessages } from "@/utils/toast-utils";
 
 // Local interface that matches component expectations
 export interface Voice {
@@ -71,9 +72,11 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   const [allVoices, setAllVoices] = useState<Voice[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [isPaginationLoading, setIsPaginationLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState<{
+    value: string;
+    label: string;
+    flag: string;
+  }>(languages[0]);
 
   // Create speech request mutation
   const { mutateAsync: createSpeechRequest } = useCreateSpeechRequest();
@@ -88,11 +91,6 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
 
     return () => clearTimeout(timer);
   }, [searchInputValue]);
-  const [selectedLanguage, setSelectedLanguage] = useState<{
-    value: string;
-    label: string;
-    flag: string;
-  }>(languages[0]);
 
   const observerRef = useRef<IntersectionObserver | null>(null);
   const lastVoiceRef = useRef<HTMLDivElement | null>(null);
@@ -240,14 +238,14 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
   const handleSubmit = async () => {
     // Validate input
     if (!prompt.trim()) {
-      setSubmitError("Please enter text to convert to speech");
+      showToast.error(toastMessages.validation.promptRequired);
       return;
     }
 
     try {
-      setIsSubmitting(true);
-      setSubmitError("");
-      setSubmitSuccess(false);
+      const loadingToast = showToast.loading(
+        toastMessages.textToSpeech.loading
+      );
 
       // Create the speech request
       await createSpeechRequest({
@@ -256,18 +254,10 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
         voiceId: selectedVoice?.id,
       });
 
-      // Show success message
-      setSubmitSuccess(true);
-
-      // Reset after 3 seconds
-      setTimeout(() => {
-        setSubmitSuccess(false);
-      }, 3000);
-    } catch (error) {
-      console.error("Failed to submit speech request:", error);
-      setSubmitError("Failed to submit request. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+      showToast.dismiss(loadingToast);
+      showToast.success(toastMessages.textToSpeech.success);
+    } catch {
+      showToast.error(toastMessages.textToSpeech.error);
     }
   };
 
@@ -410,22 +400,6 @@ export const TextToSpeechTool: FC<TextToSpeechToolProps> = ({
             maxHeight={150}
             className="px-0 pretty-scrollbar-2"
           />
-
-          {/* Error message */}
-          {submitError && (
-            <div className="flex items-center gap-1 mt-2 text-red-500 text-xs">
-              <AlertCircle size={14} />
-              <span>{submitError}</span>
-            </div>
-          )}
-
-          {/* Success message */}
-          {submitSuccess && (
-            <div className="flex items-center gap-1 mt-2 text-green-500 text-xs">
-              <CheckCircle2 size={14} />
-              <span>Successfully submitted!</span>
-            </div>
-          )}
         </div>
       </div>
     </div>

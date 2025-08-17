@@ -1,5 +1,6 @@
 import { CreateAnythingMode } from "@/components/tools/create-anything-tool";
 import { ChangeEvent, useCallback, useState } from "react";
+import { showToast } from "@/utils/toast-utils";
 
 export const useCreateAnythingTool = () => {
   const [activeMode, setActiveMode] = useState<CreateAnythingMode | null>(null);
@@ -15,14 +16,18 @@ export const useCreateAnythingTool = () => {
     if (file) {
       // Validate that it's an audio file
       if (!file.type.startsWith("audio/")) {
-        alert("Please select an audio file");
+        showToast.error("Please select an audio file");
         return;
       }
       setSelectedFile(file);
+      showToast.success(`Audio file "${file.name}" added successfully`);
     }
   };
 
   const handleFileRemove = useCallback(() => {
+    if (selectedFile) {
+      showToast.success(`Audio file "${selectedFile.name}" removed`);
+    }
     setSelectedFile(null);
     // Reset the file input value so the same file can be selected again
     if (typeof window !== "undefined") {
@@ -31,7 +36,7 @@ export const useCreateAnythingTool = () => {
         (input as HTMLInputElement).value = "";
       });
     }
-  }, []);
+  }, [selectedFile]);
 
   const handlePromptChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setCreateAnythingPrompt(e.target.value);

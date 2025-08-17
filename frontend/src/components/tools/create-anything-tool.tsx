@@ -1,8 +1,9 @@
 import { Textarea } from "../common/input/textarea";
 import { FileAttachment } from "../common/file-attachment";
 import { ChangeEvent, FC, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useCreateSpeechRequest } from "@/hooks/useSpeechRequestApi";
+import { showToast, toastMessages } from "@/utils/toast-utils";
 
 export enum CreateAnythingMode {
   INSTRUMENTAL = "instrumental",
@@ -36,16 +37,28 @@ export const CreateAnythingTool: FC<CreateAnythingToolProps> = ({
   const handleSubmit = async () => {
     // Validate input
     if (!prompt.trim()) {
+      showToast.error(toastMessages.validation.promptRequired);
       return;
     }
 
-    await createSpeechRequest({
-      prompt: prompt,
-      type: "create-anything",
-      lyrics: activeMode === CreateAnythingMode.LYRICS ? lyrics : undefined,
-      songMode: activeMode || undefined,
-      fileUrl: selectedFile ? selectedFile.name : undefined,
-    });
+    try {
+      const loadingToast = showToast.loading(
+        toastMessages.createAnything.loading
+      );
+
+      await createSpeechRequest({
+        prompt: prompt,
+        type: "create-anything",
+        lyrics: activeMode === CreateAnythingMode.LYRICS ? lyrics : undefined,
+        songMode: activeMode || undefined,
+        fileUrl: selectedFile ? selectedFile.name : undefined,
+      });
+
+      showToast.dismiss(loadingToast);
+      showToast.success(toastMessages.createAnything.success);
+    } catch {
+      showToast.error(toastMessages.createAnything.error);
+    }
   };
 
   // Expose handleSubmit to parent component

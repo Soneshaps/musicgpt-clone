@@ -1,8 +1,6 @@
 "use client";
 
 import { usePostMutation } from "@/utils/api-client";
-import { ApiResponse } from "@/types/api";
-import { ToolType } from "@/components/music-gpt-interface";
 
 export interface SpeechRequest {
   prompt: string;
